@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from "../sanity/client";
 import fondo from "../assets/images/fondo/textura_industrial.jpg";
+import fondovideo from "../assets/video/amoeba3D2.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -79,6 +80,13 @@ const Releases = () => {
         className="absolute inset-0 z-0 bg-cover opacity-50 bg-center"
         style={{ backgroundImage: `url(${fondo})` }}
       />
+      <video
+              className="fixed inset-0 w-full h-full object-cover z-0 opacity-80"
+              src={fondovideo}
+              autoPlay
+              loop
+              muted
+            ></video>
       {/* ===== DARK OVERLAY ===== */}
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
 

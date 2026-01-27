@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { fadeInUp, fadeInUpStagger, fadeInUpStaggerLoad } from "../components/animations/gsapAnimations";
 import { gsap } from "gsap";
+import { HiMenu, HiX } from "react-icons/hi";
 import fondo from "../assets/images/fondo/textura_industrial.jpg"
 import fondovideo from "../assets/video/amoeba3D.mp4"
 import logo from "../assets/images/logos/isotipo2.png";
@@ -21,6 +22,8 @@ const Home = () => {
   const textRef = useRef(null);
   const buttonsRef = useRef(null);
   const navRef = useRef(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const tracks = [
     {
@@ -109,9 +112,17 @@ const Home = () => {
   const [isSendDemosOpen, setIsSendDemosOpen] = useState(false);
 
   const scrollToSection = (id) => {
+    setIsMenuOpen(false);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  const navLinks = [
+    { name: "RELEASES", id: "releases" },
+    { name: "ARTISTS", id: "artists" },
+    { name: "MERCH", id: "merch" },
+    { name: "CONTACT", id: "contact" }
+  ];
 
   return (
     <section className="relative min-h-screen text-white px-6 md:px-14 md:py-10 overflow-hidden flex items-center justify-center">
@@ -121,16 +132,45 @@ const Home = () => {
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${fondo})` }}
       />
-      <video
-        className="absolute  inset-0 w-full h-full object-cover z-0 opacity-80"
-        src={fondovideo}
-        autoPlay
-        loop
-        muted
-      ></video>
 
       {/* ===== DARK OVERLAY ===== */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/80 via-black/60 to-black/20" />
+
+
+      {/* ================= HAMBURGER MENU (MOBILE ONLY) ================= */}
+      <div className="absolute top-20 right-6 md:hidden z-50">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="text-white hover:text-pink-200 transition-colors p-2"
+        >
+          {isMenuOpen ? <HiX size={32} /> : <HiMenu size={32} />}
+        </button>
+      </div>
+
+      {/* ================= MOBILE MENU OVERLAY ================= */}
+      <div
+        className={`fixed inset-0 bg-black/80 backdrop-blur-md z-40 flex flex-col items-center justify-center transition-all duration-500 ease-in-out md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+      >
+        <div className="flex flex-col gap-8 text-center px-10">
+          {navLinks.map((link) => (
+            <button
+              key={link.name}
+              onClick={() => scrollToSection(link.id)}
+              className="text-4xl font-heading font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
+            >
+              {link.name}
+            </button>
+          ))}
+
+          <button
+            onClick={() => { setIsMenuOpen(false); setIsSendDemosOpen(true); }}
+            className="text-xl font-mono text-zinc-400 hover:text-white transition-colors mt-8 uppercase tracking-wider"
+          >
+            Send Demo
+          </button>
+        </div>
+      </div>
+
 
 
       {/* ================= MAIN GRID ================= */}
@@ -148,7 +188,7 @@ const Home = () => {
 
           <h1 ref={titleRef} className="text-4xl uppercase md:text-7xl font-bold leading-tight tracking-wider">
             <div className="inline-block">Drum & Bass</div> <br />
-            <div className="inline-block">Underground</div> <br />
+            <div className="inline-block text-pink-100">Underground</div> <br />
             <div className="inline-block">Culture</div>
           </h1>
 
@@ -156,7 +196,7 @@ const Home = () => {
             <p className="mt-8 max-w-lg text-zinc-300 text-lg leading-relaxed border-t border-white/20 pt-6">
               <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on dubby, deep, emotional and futuristic Drum & Bass and Jungle music.
             </p>
-            <p className="mt-4 max-w-lg text-purple-300 text-lg leading-relaxed">
+            <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
               Hit subscribe to get promos.
             </p>
           </div>
@@ -183,20 +223,14 @@ const Home = () => {
 
         {/* ===== RIGHT COLUMN (NAVIGATION) ===== */}
         <div ref={navRef} className="hidden md:grid grid-cols-2 gap-4 w-full max-w-lg ml-auto">
-          {[
-            { name: "RELEASES", id: "releases" },
-            { name: "ARTISTS", id: "artists" },
-            { name: "MERCH", id: "merch" },
-            { name: "CONTACT", id: "contact" }
-          ].map((item) => (
+          {navLinks.map((item) => (
             <div
               key={item.name}
-              onClick={() => !item.disabled && scrollToSection(item.id)}
+              onClick={() => scrollToSection(item.id)}
               className={`
-                 group relative aspect-square bg-black/40 backdrop-blur-md border border-white/20 
+                 group relative aspect-square bg-zinc-900/60 backdrop-blur-md border border-white/20 
                  flex flex-col justify-between p-6 cursor-pointer overflow-hidden transition-all duration-300
                  hover:bg-white/5 hover:border-white/50 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]
-                 ${item.disabled ? 'opacity-40 cursor-not-allowed' : ''}
                `}
             >
               <video
@@ -208,11 +242,7 @@ const Home = () => {
                 className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 mix-blend-screen"
               />
 
-              <div className="relative z-10 flex justify-between items-start">
-                <div className="w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors"></div>
-              </div>
-
-              <h3 className="relative z-10 font-heading tracking-widest text-right group-hover:text-purple-200 transition-colors uppercase self-end">
+              <h3 className="relative text-pink-200 z-10 font-heading tracking-widest text-right group-hover:text-white transition-colors uppercase self-end">
                 {item.name}
               </h3>
             </div>

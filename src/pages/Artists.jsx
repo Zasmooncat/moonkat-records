@@ -71,9 +71,10 @@ const Artists = () => {
 
         {/* ===== BACKGROUND IMAGE ===== */}
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-60"
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-30"
           style={{ backgroundImage: `url(${fondo})` }}
         />
+        
         {/* ===== DARK OVERLAY ===== */}
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
 
