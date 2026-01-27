@@ -122,7 +122,7 @@ const Home = () => {
         style={{ backgroundImage: `url(${fondo})` }}
       />
       <video
-        className="absolute  inset-0 w-full h-full object-cover z-0 opacity-90"
+        className="absolute  inset-0 w-full h-full object-cover z-0 opacity-80"
         src={fondovideo}
         autoPlay
         loop

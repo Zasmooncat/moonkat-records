@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from "../sanity/client";
+import fondo from "../assets/images/fondo/textura_industrial.jpg";
 
 import ArtistModal from "../components/ArtistModal";
 
@@ -66,14 +67,20 @@ const Artists = () => {
 
   return (
     <>
-      <section ref={sectionRef} id="artists" className="relative border-t border-white/10 min-h-screen px-6 md:px-14 py-20 bg-zinc-950 overflow-hidden">
+      <section ref={sectionRef} id="artists" className="relative border-t border-white/20 min-h-screen px-6 md:px-14 py-20 overflow-hidden">
 
-        {/* Background elements */}
-        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-t from-pink-900/20 to-black pointer-events-none" />
+        {/* ===== BACKGROUND IMAGE ===== */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-60"
+          style={{ backgroundImage: `url(${fondo})` }}
+        />
+        {/* ===== DARK OVERLAY ===== */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
+
 
         <h2
           ref={titleRef}
-          className="text-6xl md:text-7xl cursor-default font-bold font-heading text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
+          className="relative z-10 text-6xl md:text-7xl cursor-default font-bold font-heading text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
         >
           {"ARTISTS".split("").map((c, i) => (
             <span key={i} className="letter tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
@@ -82,7 +89,7 @@ const Artists = () => {
           ))}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
           {artists.map((artist, i) => (
             <div
               key={artist._id}

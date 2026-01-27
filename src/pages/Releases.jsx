@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from "../sanity/client";
+import fondo from "../assets/images/fondo/textura_industrial.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -71,14 +72,20 @@ const Releases = () => {
   }, [releases]);
 
   return (
-    <section ref={sectionRef} id="releases" className="px-6 md:px-14 py-20 bg-zinc-900 min-h-screen relative overflow-hidden ">
+    <section ref={sectionRef} id="releases" className="border-t border-white/20 px-6 md:px-14 py-20 min-h-screen relative overflow-hidden">
 
-      {/* Background elements */}
-      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-t from-pink-900/20 to-black pointer-events-none" />
+      {/* ===== BACKGROUND IMAGE ===== */}
+      <div
+        className="absolute inset-0 z-0 bg-cover opacity-50 bg-center"
+        style={{ backgroundImage: `url(${fondo})` }}
+      />
+      {/* ===== DARK OVERLAY ===== */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
+
 
       <h2
         ref={titleRef}
-        className="text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold font-heading text-white mb-16 tracking-tighter"
+        className="relative z-10 text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold font-heading text-white mb-16 tracking-tighter"
       >
         {"RELEASES".split("").map((c, i) => (
           <span key={i} className="letter cursor-default inline-block hover:text-pink-200 transition-colors duration-300">
@@ -87,7 +94,7 @@ const Releases = () => {
         ))}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
         {releases.map((r, i) => (
           <a
             key={r._id}
