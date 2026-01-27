@@ -1,144 +1,128 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-import forgiven from "../assets/images/releases/forgiven.png";
-import greenhorns from "../assets/images/releases/greenhorns.png";
-import trouble from "../assets/images/releases/timesOfTrouble2.png";
+import { client, urlFor } from "../sanity/client";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const releases = [
-  {
-    title: "Times of Trouble",
-    artist: "Mooncat",
-    date: "January 2026",
-    img: trouble,
-    link: "https://example.com/times-of-trouble",
-  },
-  {
-    title: "Green Horns",
-    artist: "Mooncat",
-    date: "December 2025",
-    img: greenhorns,
-    link: "https://example.com/green-horns",
-  },
-  {
-    title: "Forgiven (Mooncat Remix)",
-    artist: "Kiamya, Mooncat",
-    date: "November 2025",
-    img: forgiven,
-    link: "https://example.com/forgiven-mooncat-remix",
-  },
-];
 
 const Releases = () => {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
   const cardsRef = useRef([]);
 
+  const [releases, setReleases] = useState([]);
+
   useEffect(() => {
+    client
+      .fetch(`
+        *[_type == "release"] | order(releaseDate desc){
+          _id,
+          title,
+          bandcamp,
+          releaseDate,
+          cover,
+          artist->{
+            name
+          }
+        }
+      `)
+      .then(setReleases)
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (!releases.length) return;
+
     const ctx = gsap.context(() => {
-      /* ===== TITLE LETTER BY LETTER ===== */
       const letters = titleRef.current.querySelectorAll(".letter");
 
       gsap.fromTo(
         letters,
-        {
-          opacity: 0,
-          y: 20,
-        },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          ease: "power2.out",
-          stagger: {
-            each: 0.06,
-            onStart() {
-              gsap.fromTo(
-                this.targets(),
-                { opacity: 0.2 },
-                {
-                  opacity: 1,
-                  duration: 0.15,
-                  repeat: 1,
-                  yoyo: true,
-                }
-              );
-            },
-          },
+          stagger: 0.05,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 70%",
-            toggleActions: "play reverse play reverse",
+            toggleActions: "play none play none",
           },
         }
       );
 
-      /* ===== RELEASE CARDS FADE IN ===== */
       gsap.fromTo(
         cardsRef.current,
-        {
-          opacity: 0,
-          y: 40,
-        },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.15,
+          stagger: 0.12,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 65%",
-            toggleActions: "play reverse play reverse",
+            toggleActions: "play none play none",
           },
         }
       );
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [releases]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="releases"
-      className="px-8 pt-20 bg-zinc-200 min-h-screen "
-    >
-      {/* TITLE */}
+    <section ref={sectionRef} id="releases" className="px-6 md:px-14 py-20 bg-zinc-900 min-h-screen relative overflow-hidden ">
+
+      {/* Background elements */}
+      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-t from-pink-900/20 to-black pointer-events-none" />
+
       <h2
         ref={titleRef}
-        className="text-6xl text-center md:text-start mb-12 font-bold text-zinc-800 flex flex-wrap "
+        className="text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold font-heading text-white mb-16 tracking-tighter"
       >
-        {"RELEASES".split("").map((char, i) => (
-          <span key={i} className="letter inline-block">
-            {char}
+        {"RELEASES".split("").map((c, i) => (
+          <span key={i} className="letter cursor-default inline-block hover:text-pink-200 transition-colors duration-300">
+            {c}
           </span>
         ))}
       </h2>
 
-      {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-5 md:gap-6">
-        {releases.map((release, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
+        {releases.map((r, i) => (
           <a
-            key={index}
-            href={release.link}
+            key={r._id}
+            ref={(el) => (cardsRef.current[i] = el)}
+            href={r.bandcamp}
             target="_blank"
-            rel="noopener noreferrer"
-            ref={(el) => (cardsRef.current[index] = el)}
-            className="overflow-hidden flex flex-col mb-10 cursor-pointer"
+            rel="noreferrer"
+            className="group flex flex-col gap-5 cursor-pointer"
           >
-            <img
-              src={release.img}
-              alt={release.title}
-              className="object-cover mb-3 transition-transform duration-700 ease-out hover:scale-105"
-            />
-            <h3 className="text-xl font-semibold text-zinc-800">
-              {release.title}
-            </h3>
-            <p className="text-gray-500">{release.artist}</p>
-            <p className="text-gray-400 text-sm">{release.date}</p>
+            {/* Image Card (Styled like Home Nav) */}
+            <div className="relative aspect-square w-full bg-black/10 backdrop-blur-md border border-white/20 overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+              <img
+                src={urlFor(r.cover).width(600).url()}
+                alt={r.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              {/* Technical Dot */}
+              <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
+            </div>
+
+            {/* Content Below */}
+            <div className="flex bg-black/30 p-4 m-2 backdrop-blur-md flex-col">
+              <div className="flex justify-between items-start mb-1">
+                <h3 className="font-heading tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
+                  {r.title}
+                </h3>
+                <span className="text-xs font-mono text-zinc-500 group-hover:text-zinc-300 transition-colors border border-zinc-800 px-1.5 py-0.5 rounded ml-2">
+                  {new Date(r.releaseDate).getFullYear()}
+                </span>
+              </div>
+              <p className="text-sm font-mono text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider">
+                {r.artist?.name}
+              </p>
+            </div>
           </a>
         ))}
       </div>

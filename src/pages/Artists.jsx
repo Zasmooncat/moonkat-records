@@ -1,155 +1,133 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { client, urlFor } from "../sanity/client";
 
-import artistsVideo from "../assets/video/logovid.mp4";
-
-import mooncat from "../assets/images/artists/mooncat.webp";
-import isaacMaya from "../assets/images/artists/isaacmaya.webp";
-import noHumanSound from "../assets/images/artists/no-human-sound.webp";
-import kiamya from "../assets/images/artists/kiamya.webp";
-import mrKickz from "../assets/images/artists/mr-kickz.webp";
+import ArtistModal from "../components/ArtistModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const artists = [
-    { name: "Mooncat", location: "Spain", img: mooncat, link: "#" },
-    { name: "Isaac Maya", location: "Mexico", img: isaacMaya, link: "#" },
-    { name: "No Human Sound", location: "Spain", img: noHumanSound, link: "#" },
-    { name: "Kiamya", location: "Spain", img: kiamya, link: "#" },
-    { name: "Mr. Kickz", location: "Rep. Dominicana", img: mrKickz, link: "#" },
-];
-
 const Artists = () => {
-    const sectionRef = useRef(null);
-    const titleRef = useRef(null);
-    const cardsRef = useRef([]);
+  const sectionRef = useRef(null);
+  const titleRef = useRef(null);
+  const cardsRef = useRef([]);
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            /* ===== TITLE LETTER BY LETTER ===== */
-            const letters = titleRef.current.querySelectorAll(".letter");
+  const [artists, setArtists] = useState([]);
+  const [selectedArtist, setSelectedArtist] = useState(null);
 
-            gsap.fromTo(
-                letters,
-                {
-                    opacity: 0,
-                    y: 20,
-                },
-                {
-                    opacity: 1,
-                    y: 0,
-                    ease: "power2.out",
-                    stagger: {
-                        each: 0.06,
-                        onStart() {
-                            gsap.fromTo(
-                                this.targets(),
-                                { opacity: 0.2 },
-                                {
-                                    opacity: 1,
-                                    duration: 0.15,
-                                    repeat: 1,
-                                    yoyo: true,
-                                }
-                            );
-                        },
-                    },
-                    scrollTrigger: {
-                        trigger: sectionRef.current,
-                        start: "top 70%",
-                        toggleActions: "play reverse play reverse",
-                    },
-                }
-            );
+  // Fetch Sanity artists
+  useEffect(() => {
+    client
+      .fetch(`*[_type == "artist"]{_id, name, bio, links, image, location}`)
+      .then(setArtists)
+      .catch(console.error);
+  }, []);
 
-            /* ===== CARDS FADE IN ===== */
-            gsap.fromTo(
-                cardsRef.current,
-                {
-                    opacity: 0,
-                    y: 40,
-                },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: "power3.out",
-                    stagger: 0.15,
-                    scrollTrigger: {
-                        trigger: sectionRef.current,
-                        start: "top 65%",
-                        toggleActions: "play reverse play reverse",
-                    },
-                }
-            );
-        }, sectionRef);
+  // GSAP
+  useEffect(() => {
+    if (!artists.length) return;
 
-        return () => ctx.revert();
-    }, []);
+    const ctx = gsap.context(() => {
+      const letters = titleRef.current.querySelectorAll(".letter");
 
-    return (
-        <section
-            ref={sectionRef}
-            id="artists"
-            className="relative min-h-screen overflow-hidden"
+      gsap.fromTo(
+        letters,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play none play none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        cardsRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 65%",
+            toggleActions: "play none play none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [artists]);
+
+  return (
+    <>
+      <section ref={sectionRef} id="artists" className="relative border-t border-white/10 min-h-screen px-6 md:px-14 py-20 bg-zinc-950 overflow-hidden">
+
+        {/* Background elements */}
+        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-t from-pink-900/20 to-black pointer-events-none" />
+
+        <h2
+          ref={titleRef}
+          className="text-6xl md:text-7xl cursor-default font-bold font-heading text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
         >
-            {/* ===== VIDEO BACKGROUND ===== */}
-            <div className="absolute inset-0 z-0">
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover opacity-50"
-                >
-                    <source src={artistsVideo} type="video/mp4" />
-                </video>
+          {"ARTISTS".split("").map((c, i) => (
+            <span key={i} className="letter tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
+              {c}
+            </span>
+          ))}
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
+          {artists.map((artist, i) => (
+            <div
+              key={artist._id}
+              ref={(el) => (cardsRef.current[i] = el)}
+              onClick={() => setSelectedArtist(artist)}
+              className="group flex flex-col gap-5 cursor-pointer"
+            >
+              {/* Image Card (Styled like Home Nav) */}
+              <div className="relative aspect-square w-full bg-black/10 backdrop-blur-md border border-white/20 overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+                <img
+                  src={urlFor(artist.image).width(600).url()}
+                  alt={artist.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                {/* Technical Dot */}
+                <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
+              </div>
+
+              {/* Content Below */}
+              <div className="flex flex-col">
+                <h3 className="font-heading tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase text-xl leading-tight">
+                  {artist.name}
+                </h3>
+
+                {artist.location && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                    <span className="text-xs font-mono text-zinc-400 group-hover:text-white transition-colors uppercase">
+                      {artist.location}
+                    </span>
+                  </div>
+                )}
+              </div>
+
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* ===== CONTENT ===== */}
-            <div className="relative z-10 px-6 md:px-8 pt-24 pb-24">
-                {/* TITLE */}
-                <h2
-                    ref={titleRef}
-                    className="text-center md:text-start text-6xl font-bold text-zinc-100 mb-16 flex flex-wrap gap-x-1"
-                >
-                    {"ARTISTS".split("").map((char, i) => (
-                        <span key={i} className="letter inline-block">
-                            {char}
-                        </span>
-                    ))}
-                </h2>
-
-                {/* CARDS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-                    {artists.map((artist, index) => (
-                        <a
-                            key={index}
-                            href={artist.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            ref={(el) => (cardsRef.current[index] = el)}
-                            className="group flex flex-col"
-                        >
-                            <div className="overflow-hidden mb-4">
-                                <img
-                                    src={artist.img}
-                                    alt={artist.name}
-                                    className="w-full h-60 object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                />
-                            </div>
-
-                            <h3 className="text-xl font-semibold text-zinc-100 group-hover:text-violet-300 transition-colors">
-                                {artist.name}
-                            </h3>
-                            <p className="text-gray-400 text-sm">{artist.location}</p>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+      {selectedArtist && (
+        <ArtistModal artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
+      )}
+    </>
+  );
 };
 
 export default Artists;

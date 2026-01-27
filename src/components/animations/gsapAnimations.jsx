@@ -112,3 +112,16 @@ export const hoverScaleGlow = (element) => {
     });
   });
 };
+export const fadeInUpStaggerLoad = (elements, options = {}) => {
+if (!elements || !elements.length) return;
+
+
+gsap.from(elements, {
+y: 40,
+opacity: 0,
+duration: 1.1,
+ease: "power3.out",
+stagger: 0.15,
+...options,
+});
+};
