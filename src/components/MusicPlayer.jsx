@@ -12,6 +12,7 @@ const MusicPlayer = ({ tracks }) => {
     const audioRef = useRef(null);
     const containerRef = useRef(null);
     const textRef = useRef(null);
+    const titleContainerRef = useRef(null);
 
     // Guard clause: if no tracks, don't render or render placeholder
     if (!tracks || tracks.length === 0) return null;
@@ -68,20 +69,32 @@ const MusicPlayer = ({ tracks }) => {
     }, []);
 
     useEffect(() => {
-        // Marquee effect for text when playing
-        if (isPlaying) {
-            gsap.to(textRef.current, {
-                x: "-50%",
-                duration: 10,
-                ease: "none",
-                repeat: -1,
-                yoyo: true
-            });
-        } else {
-            gsap.killTweensOf(textRef.current);
-            gsap.to(textRef.current, { x: 0, duration: 0.5 });
+        // Dynamic Marquee logic
+        const textEl = textRef.current;
+        const containerEl = titleContainerRef.current;
+
+        if (!textEl || !containerEl) return;
+
+        // Reset position
+        gsap.set(textEl, { x: 0 });
+        gsap.killTweensOf(textEl);
+
+        const textWidth = textEl.scrollWidth;
+        const containerWidth = containerEl.offsetWidth;
+
+        if (textWidth > containerWidth) {
+            const scrollDist = textWidth - containerWidth;
+            // Use a timeline for better control (delay at start/end)
+            const tl = gsap.timeline({ repeat: -1, yoyo: true, delay: 1 });
+
+            tl.to(textEl, {
+                x: -scrollDist,
+                duration: scrollDist / 20, // Adjust speed based on distance
+                ease: "power1.inOut",
+                delay: 1 // Hang at the start
+            }).to({}, { duration: 1 }); // Hang at the end
         }
-    }, [isPlaying, currentTrackIndex]);
+    }, [currentTrackIndex, isPlaying]); // Re-run when track changes or starts playing
 
     return (
         <div
@@ -112,9 +125,12 @@ const MusicPlayer = ({ tracks }) => {
                 </button>
             </div>
 
-            {/* Track Info (Marquee) */}
-            <div className="overflow-hidden w-32 md:w-48 h-5 relative flex items-center mask-image-linear-gradient">
-                <div ref={textRef} className="whitespace-nowrap text-xs font-mono text-zinc-300 uppercase tracking-widest absolute">
+            {/* Track Info (Dynamic Marquee) */}
+            <div
+                ref={titleContainerRef}
+                className="overflow-hidden w-32 md:w-48 h-5 relative flex items-center mask-image-linear-gradient"
+            >
+                <div ref={textRef} className="whitespace-nowrap text-xs font-mono text-zinc-300 uppercase tracking-widest absolute left-0">
                     <span className="font-bold text-white">{currentTrack.artist}</span> - {currentTrack.title}
                 </div>
             </div>
