@@ -129,7 +129,18 @@ const Home = () => {
   const scrollToSection = (id) => {
     setIsMenuOpen(false);
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (el) {
+      const offset = 80; // Enough space to keep the title in view
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
   };
 
   const navLinks = [
@@ -211,7 +222,7 @@ const Home = () => {
           />
 
           <h1 ref={titleRef} className="titulo text-3xl uppercase md:text-6xl font-bold leading-tight tracking-wider">
-            <div className="inline-block">Drum & Bass</div> <br />
+            <div className="inline-block ">Drum & Bass</div> <br />
             <div className="inline-block text-pink-100">Underground</div> <br />
             <div className="inline-block">Culture</div>
           </h1>
@@ -252,23 +263,31 @@ const Home = () => {
               key={item.name}
               onClick={() => scrollToSection(item.id)}
               className={`
-                 group relative aspect-square bg-zinc-900/60 backdrop-blur-md border border-white/20 
-                 flex flex-col justify-between p-6 cursor-pointer overflow-hidden transition-all duration-300
-                 hover:bg-white/5 hover:border-white/50 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]
+                 group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl 
+                 border-t border-l border-white/30 border-r border-b border-white/5
+                 flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
+                 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
+                 rounded-xl
                `}
             >
+              {/* Liquid Reflection Overlay */}
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
               <video
                 src={item.video}
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 mix-blend-screen"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0 mix-blend-screen scale-110 group-hover:scale-100 transition-transform duration-1000"
               />
 
-              <h3 className="relative text-pink-200 z-10 font-heading tracking-widest text-right group-hover:text-white transition-colors uppercase self-end">
-                {item.name}
-              </h3>
+              <div className="relative z-10 flex flex-col h-full justify-end">
+                <h3 className="text-zinc-100 font-heading tracking-[0.2em] text-right group-hover:text-white transition-colors uppercase text-sm md:text-base leading-none">
+                  {item.name}
+                </h3>
+                <div className="h-[1px] w-0 group-hover:w-12 bg-pink-400 mt-2 self-end transition-all duration-500 opacity-0 group-hover:opacity-100" />
+              </div>
             </div>
           ))}
         </div>

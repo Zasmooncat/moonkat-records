@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from "../sanity/client";
+import FlickeringTitle from '../components/FlickeringTitle';
 import fondo from "../assets/images/fondo/textura_industrial.jpg";
 
 import ArtistModal from "../components/ArtistModal";
@@ -10,7 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Artists = () => {
   const sectionRef = useRef(null);
-  const titleRef = useRef(null);
   const cardsRef = useRef([]);
 
   const [artists, setArtists] = useState([]);
@@ -29,23 +29,6 @@ const Artists = () => {
     if (!artists.length) return;
 
     const ctx = gsap.context(() => {
-      const letters = titleRef.current.querySelectorAll(".letter");
-
-      gsap.fromTo(
-        letters,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.05,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-            toggleActions: "play none play none",
-          },
-        }
-      );
-
       gsap.fromTo(
         cardsRef.current,
         { opacity: 0, y: 40 },
@@ -55,8 +38,9 @@ const Artists = () => {
           stagger: 0.12,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 65%",
-            toggleActions: "play none play none",
+            start: "top 70%",
+            end: "bottom 30%",
+            toggleActions: "restart reset restart reset",
           },
         }
       );
@@ -67,7 +51,7 @@ const Artists = () => {
 
   return (
     <>
-      <section ref={sectionRef} id="artists" className="relative min-h-screen px-6 md:px-14 py-20 overflow-hidden">
+      <section ref={sectionRef} id="artists" className="relative  px-6 md:px-14  overflow-hidden">
 
         {/* ===== BACKGROUND IMAGE ===== */}
         {/* <div
@@ -79,16 +63,11 @@ const Artists = () => {
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/30 via-black/60 to-pink-900/20" />
 
 
-        <h2
-          ref={titleRef}
-          className="relative z-10 text-4xl md:text-7xl cursor-default font-bold titulo text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
-        >
-          {"ARTISTS".split("").map((c, i) => (
-            <span key={i} className=" tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
-              {c}
-            </span>
-          ))}
-        </h2>
+        <FlickeringTitle
+          text="ARTISTS"
+          showUnderline={true}
+          className="text-4xl md:text-7xl max-w-7xl mx-auto tracking-widest mb-16 tracking-tighter"
+        />
 
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
           {artists.map((artist, i) => (
