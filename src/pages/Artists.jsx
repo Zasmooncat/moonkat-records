@@ -51,7 +51,7 @@ const Artists = () => {
 
   return (
     <>
-      <section ref={sectionRef} id="artists" className="relative  px-6 md:px-14  overflow-hidden">
+      <section ref={sectionRef} id="artists" className="relative pt-10 px-6 md:px-14  overflow-hidden">
 
         {/* ===== BACKGROUND IMAGE ===== */}
         {/* <div
