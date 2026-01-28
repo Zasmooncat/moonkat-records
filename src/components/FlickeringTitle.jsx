@@ -17,7 +17,7 @@ const FlickeringTitle = ({ text, className = "", showUnderline = false }) => {
                     trigger: containerRef.current,
                     start: "top 90%",
                     end: "bottom 10%",
-                    toggleActions: "restart reset restart reset"
+                    toggleActions: "restart none none reset"
                 }
             });
 

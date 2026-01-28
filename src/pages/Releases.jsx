@@ -47,7 +47,7 @@ const Releases = () => {
             trigger: sectionRef.current,
             start: "top 70%",
             end: "bottom 30%",
-            toggleActions: "restart reset restart reset",
+            toggleActions: "restart none none reset",
           },
         }
       );
