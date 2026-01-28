@@ -154,10 +154,10 @@ const Home = () => {
     <section className="relative min-h-screen text-white px-6 md:px-14 md:py-10 overflow-hidden flex items-center justify-center">
 
       {/* ===== BACKGROUND IMAGE ===== */}
-      <div
+      {/* <div
         className={`absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
         style={{ backgroundImage: `url(${fondo})` }}
-      />
+      /> */}
       <video
         className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${videoReady ? 'opacity-80' : 'opacity-0'}`}
         src={fondovideo}
