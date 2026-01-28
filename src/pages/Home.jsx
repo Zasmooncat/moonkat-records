@@ -51,8 +51,12 @@ const Home = () => {
     }
   ];
 
+  const [videoReady, setVideoReady] = useState(false);
+
   useEffect(() => {
     // Initial Load Animations
+    if (!videoReady) return;
+
     const titleLines = titleRef.current.children;
     const navItems = navRef.current ? navRef.current.children : [];
 
@@ -109,6 +113,14 @@ const Home = () => {
     });
 
     return () => ctx.revert();
+  }, [videoReady]);
+
+  // Fallback: Start animation even if video fails to load after 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVideoReady(true);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
@@ -132,19 +144,21 @@ const Home = () => {
 
       {/* ===== BACKGROUND IMAGE ===== */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center"
+        className={`absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
         style={{ backgroundImage: `url(${fondo})` }}
       />
       <video
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-80"
+        className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${videoReady ? 'opacity-80' : 'opacity-0'}`}
         src={fondovideo}
         autoPlay
         loop
         muted
+        playsInline
+        onLoadedData={() => setVideoReady(true)}
       ></video>
 
       {/* ===== DARK OVERLAY ===== */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/20 to-black" />
+      <div className={`absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/20 to-black transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`} />
 
 
       {/* ================= HAMBURGER MENU (MOBILE ONLY) ================= */}
