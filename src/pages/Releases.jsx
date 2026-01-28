@@ -93,7 +93,7 @@ const Releases = () => {
 
       <h2
         ref={titleRef}
-        className="relative z-10 text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold titulo text-white mb-16 tracking-tighter"
+        className="relative z-10 text-4xl md:text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold titulo text-white mb-16 tracking-tighter"
       >
         {"RELEASES".split("").map((c, i) => (
           <span key={i} className=" cursor-default inline-block hover:text-pink-200 transition-colors duration-300">

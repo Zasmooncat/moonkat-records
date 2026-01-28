@@ -81,7 +81,7 @@ const Artists = () => {
 
         <h2
           ref={titleRef}
-          className="relative z-10 text-6xl md:text-7xl cursor-default font-bold titulo text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
+          className="relative z-10 text-4xl md:text-7xl cursor-default font-bold titulo text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
         >
           {"ARTISTS".split("").map((c, i) => (
             <span key={i} className=" tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
