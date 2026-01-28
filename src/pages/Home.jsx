@@ -172,8 +172,14 @@ const Home = () => {
       <div className={`absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/20 to-black transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`} />
 
 
-      {/* ================= HAMBURGER MENU (MOBILE ONLY) ================= */}
-      <div className="absolute top-20 right-6 md:hidden z-50">
+      {/* ================= MOBILE HEADER (LOGO + HAMBURGER) ================= */}
+      <div className="absolute top-8 left-6 right-6 flex md:hidden items-center justify-between z-50">
+        <img
+          src={logo}
+          alt="Moonkat Records Logo"
+          className="h-8 drop-shadow-xl cursor-pointer"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        />
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-white hover:text-pink-200 transition-colors p-2"
@@ -209,15 +215,16 @@ const Home = () => {
 
 
       {/* ================= MAIN GRID ================= */}
-      <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center w-full max-w-7xl">
+      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-24 md:pt-0">
         {/* ===== LEFT COLUMN ===== */}
 
         <div className="flex flex-col justify-center">
+          {/* Desktop Logo Only */}
           <img
             ref={logoRef}
             src={logo}
             alt="Moonkat Records Logo"
-            className="h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105"
+            className="hidden md:block h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           />
 
@@ -235,7 +242,7 @@ const Home = () => {
               Hit subscribe to get promos.
             </p>
           </div>
-          <div ref={buttonsRef} className="mt-10 flex gap-6 items-center font-sans-custom">
+          <div ref={buttonsRef} className="mt-8 md:mt-10 flex gap-6 items-center font-sans-custom">
             <button
               className="boton-elegante"
               onClick={() => setIsSubscribeOpen(true)}
