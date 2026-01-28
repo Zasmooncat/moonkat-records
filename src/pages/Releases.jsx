@@ -81,7 +81,7 @@ const Releases = () => {
         className="text-4xl md:text-7xl max-w-7xl mx-auto tracking-wider mb-16 tracking-tighter"
       />
 
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
+      <div className="relative z-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
         {releases.map((r, i) => (
           <a
             key={r._id}
@@ -92,7 +92,7 @@ const Releases = () => {
             className="group flex flex-col cursor-pointer"
           >
             {/* Image Card (Styled like Home Nav) */}
-            <div className="relative aspect-square w-full bg-black/10 backdrop-blur-md border border-white overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+            <div className="relative w-40 md:w-full bg-black/10 backdrop-blur-md border border-white overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
               <img
                 src={urlFor(r.cover).width(600).url()}
@@ -104,7 +104,7 @@ const Releases = () => {
             </div>
 
             {/* Content Below */}
-            <div className="flex bg-black/30 p-4 border border-white/20 backdrop-blur-md flex-col">
+            <div className="flex bg-black/30 mt-4 backdrop-blur-md flex-col">
               <div className="flex justify-between items-start mb-1">
                 <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
                   {r.title}
