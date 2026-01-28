@@ -173,7 +173,7 @@ const Home = () => {
 
 
       {/* ================= MOBILE HEADER (LOGO + HAMBURGER) ================= */}
-      <div className="absolute top-8 left-6 right-6 flex md:hidden items-center justify-between z-50">
+      <div className="absolute top-20 left-6 right-6 flex md:hidden items-center justify-between z-50">
         <img
           src={logo}
           alt="Moonkat Records Logo"
@@ -215,7 +215,7 @@ const Home = () => {
 
 
       {/* ================= MAIN GRID ================= */}
-      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-24 md:pt-0">
+      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-44 md:pt-0">
         {/* ===== LEFT COLUMN ===== */}
 
         <div className="flex flex-col justify-center">
