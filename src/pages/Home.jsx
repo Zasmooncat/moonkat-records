@@ -151,7 +151,7 @@ const Home = () => {
   ];
 
   return (
-    <section className="relative min-h-screen text-white px-6 md:px-14 md:py-10 overflow-hidden flex items-center justify-center">
+    <section className="relative min-h-screen text-white px-6 md:px-14 md:py-10 overflow-hidden flex md:items-center items-start justify-center">
 
       {/* ===== BACKGROUND IMAGE ===== */}
       {/* <div
@@ -215,7 +215,7 @@ const Home = () => {
 
 
       {/* ================= MAIN GRID ================= */}
-      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-44 md:pt-0">
+      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-40 md:pt-0">
         {/* ===== LEFT COLUMN ===== */}
 
         <div className="flex flex-col justify-center">
