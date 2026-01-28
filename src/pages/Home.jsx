@@ -57,55 +57,55 @@ const Home = () => {
     const navItems = navRef.current ? navRef.current.children : [];
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline();
+      const allElements = [
+        logoRef.current,
+        ...Array.from(titleLines),
+        textRef.current,
+        buttonsRef.current,
+        ...Array.from(navItems)
+      ].filter(el => el !== null);
 
-      // 0. Set initial states
-      gsap.set([titleLines, textRef.current], { x: 100, opacity: 0 });
-      gsap.set(buttonsRef.current, { opacity: 0 });
-      gsap.set(navItems, { opacity: 0 });
-      gsap.set(logoRef.current, { opacity: 0, scale: 0.8 });
+      // 0. Initial state - Hidden
+      gsap.set(allElements, { opacity: 0, visibility: "visible" });
 
-      // 1. Start: Title & Logo (Duration 0.5s)
-      tl.addLabel("start");
+      // 1. Independent Random Flickering for each element
+      allElements.forEach((el) => {
+        const tl = gsap.timeline({
+          delay: Math.random() * 0.3 // Random start delay for each tube
+        });
 
-      tl.to(logoRef.current, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, "start");
+        const flickerCount = 4 + Math.floor(Math.random() * 4); // 4 to 8 flickers
 
-      tl.to(titleLines, {
-        x: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-        stagger: 0
-      }, "start");
+        for (let i = 0; i < flickerCount; i++) {
+          tl.to(el, {
+            opacity: Math.random() > 0.6 ? 0.3 : 0.8,
+            duration: 0.03 + Math.random() * 0.08,
+            filter: Math.random() > 0.5 ? "drop-shadow(0 0 10px rgba(255,192,203,0.3))" : "none"
+          })
+            .to(el, {
+              opacity: 0,
+              duration: 0.02 + Math.random() * 0.05
+            });
+        }
 
-      // 2. Text (Starts after Title ends: 0.5s)
-      tl.to(textRef.current, {
-        x: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out"
-      }, "start+=0.5");
-
-      // 3. Buttons (Starts after Text ends: 1.0s)
-      tl.to(buttonsRef.current, {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out"
-      }, "start+=1.0");
-
-      // 4. Nav (Starts after Buttons end: 1.5s -> Ends at 2.0s)
-      if (navItems.length > 0) {
-        tl.to(navItems, {
+        // Final turn on with a little "pop"
+        tl.to(el, {
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.1,
-          ease: "power2.out",
-          onComplete: () => {
-            gsap.set(navItems, { clearProps: "opacity" });
-          }
-        }, "start+=1.5");
-      }
-
+          scale: 1.02,
+          filter: "drop-shadow(0 0 15px rgba(255,192,203,0.6))",
+          duration: 0.1,
+          ease: "power2.out"
+        })
+          .to(el, {
+            scale: 1,
+            filter: "none",
+            duration: 0.3,
+            onComplete: () => {
+              // Force visibility and clear GSAP styles so CSS hovers work
+              gsap.set(el, { clearProps: "all", opacity: 1 });
+            }
+          });
+      });
     });
 
     return () => ctx.revert();
@@ -192,7 +192,7 @@ const Home = () => {
             ref={logoRef}
             src={logo}
             alt="Moonkat Records Logo"
-            className="h-9 mb-10 drop-shadow-xl self-start cursor-pointer opacity-0"
+            className="h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           />
 
@@ -202,7 +202,7 @@ const Home = () => {
             <div className="inline-block">Culture</div>
           </h1>
 
-          <div ref={textRef} className="opacity-0 bebas">
+          <div ref={textRef} className="bebas">
             <p className="mt-8 max-w-lg text-zinc-300  leading-relaxed border-t border-white/20 pt-6">
               <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass and Jungle music.
             </p>
@@ -210,7 +210,7 @@ const Home = () => {
               Hit subscribe to get promos.
             </p>
           </div>
-          <div ref={buttonsRef} className="mt-10 flex gap-6 items-center opacity-0 font-sans-custom">
+          <div ref={buttonsRef} className="mt-10 flex gap-6 items-center font-sans-custom">
             <button
               className="boton-elegante"
               onClick={() => setIsSubscribeOpen(true)}
