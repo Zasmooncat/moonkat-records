@@ -73,30 +73,30 @@ const Releases = () => {
   }, [releases]);
 
   return (
-    <section ref={sectionRef} id="releases" className="border-t border-white/20 px-6 md:px-14 py-20 min-h-screen relative overflow-hidden">
+    <section ref={sectionRef} id="releases" className=" px-6 md:px-14 py-20 min-h-screen relative overflow-hidden">
 
       {/* ===== BACKGROUND IMAGE ===== */}
-      <div
+      {/* <div
         className="absolute inset-0 z-0 bg-cover opacity-50 bg-center"
         style={{ backgroundImage: `url(${fondo})` }}
-      />
-      <video
-              className="fixed inset-0 w-full h-full object-cover z-0 opacity-80"
+      /> */}
+      {/* <video
+              className="absolute inset-0 w-full h-full object-cover z-0 opacity-80"
               src={fondovideo}
               autoPlay
               loop
               muted
-            ></video>
+            ></video> */}
       {/* ===== DARK OVERLAY ===== */}
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
 
 
       <h2
         ref={titleRef}
-        className="relative z-10 text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold font-heading text-white mb-16 tracking-tighter"
+        className="relative z-10 text-6xl max-w-7xl mx-auto tracking-wider md:text-7xl flex font-bold titulo text-white mb-16 tracking-tighter"
       >
         {"RELEASES".split("").map((c, i) => (
-          <span key={i} className="letter cursor-default inline-block hover:text-pink-200 transition-colors duration-300">
+          <span key={i} className=" cursor-default inline-block hover:text-pink-200 transition-colors duration-300">
             {c}
           </span>
         ))}
@@ -110,7 +110,7 @@ const Releases = () => {
             href={r.bandcamp}
             target="_blank"
             rel="noreferrer"
-            className="group flex flex-col gap-5 cursor-pointer"
+            className="group flex flex-col cursor-pointer"
           >
             {/* Image Card (Styled like Home Nav) */}
             <div className="relative aspect-square w-full bg-black/10 backdrop-blur-md border border-white/20 overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
@@ -125,16 +125,14 @@ const Releases = () => {
             </div>
 
             {/* Content Below */}
-            <div className="flex bg-black/30 p-4 m-2 backdrop-blur-md flex-col">
+            <div className="flex bg-black/30 p-4 border border-white/20 backdrop-blur-md flex-col">
               <div className="flex justify-between items-start mb-1">
-                <h3 className="font-heading tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
+                <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
                   {r.title}
                 </h3>
-                <span className="text-xs font-mono text-zinc-500 group-hover:text-zinc-300 transition-colors border border-zinc-800 px-1.5 py-0.5 rounded ml-2">
-                  {new Date(r.releaseDate).getFullYear()}
-                </span>
+
               </div>
-              <p className="text-sm font-mono text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider">
+              <p className="text-sm bebas text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider">
                 {r.artist?.name}
               </p>
             </div>

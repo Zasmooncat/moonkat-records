@@ -67,10 +67,10 @@ const SubscribeModal = ({ isOpen, onClose }) => {
           <HiX size={28} />
         </button>
 
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <h2 className="text-2xl md:text-3xl uppercase font-bold text-white mb-4">
           Join the Promo List
         </h2>
-        <p className="text-gray-400 text-sm mb-6">
+        <p className="text-pink-200 text-sm mb-6">
           Get exclusive access to new releases before anyone else!
         </p>
 
@@ -80,7 +80,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
               htmlFor="email" 
               className="block text-white text-sm font-medium mb-2"
             >
-              Email Address
+              Email
             </label>
             <input
               type="email"

@@ -7,8 +7,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'heading': ['Bebas Neue', 'sans-serif'],
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'heading': ['Inter', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif'],
+        'zen': ['"Zen Dots"', 'cursive'],
+        'bebas': ['"Bebas Neue"', 'sans-serif'],
       },
     },
   },

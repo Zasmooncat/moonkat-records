@@ -67,24 +67,24 @@ const Artists = () => {
 
   return (
     <>
-      <section ref={sectionRef} id="artists" className="relative border-t border-white/20 min-h-screen px-6 md:px-14 py-20 overflow-hidden">
+      <section ref={sectionRef} id="artists" className="relative min-h-screen px-6 md:px-14 py-20 overflow-hidden">
 
         {/* ===== BACKGROUND IMAGE ===== */}
-        <div
+        {/* <div
           className="absolute inset-0 z-0 bg-cover bg-center opacity-30"
           style={{ backgroundImage: `url(${fondo})` }}
-        />
-        
+        /> */}
+
         {/* ===== DARK OVERLAY ===== */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-black/60 to-black" />
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/30 via-black/60 to-pink-900/20" />
 
 
         <h2
           ref={titleRef}
-          className="relative z-10 text-6xl md:text-7xl cursor-default font-bold font-heading text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
+          className="relative z-10 text-6xl md:text-7xl cursor-default font-bold titulo text-white mb-16 flex max-w-7xl mx-auto tracking-tighter"
         >
           {"ARTISTS".split("").map((c, i) => (
-            <span key={i} className="letter tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
+            <span key={i} className=" tracking-wider inline-block hover:text-pink-200 transition-colors duration-300">
               {c}
             </span>
           ))}
@@ -112,14 +112,14 @@ const Artists = () => {
 
               {/* Content Below */}
               <div className="flex flex-col">
-                <h3 className="font-heading tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase text-xl leading-tight">
+                <h3 className="font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase text-xl leading-tight">
                   {artist.name}
                 </h3>
 
                 {artist.location && (
                   <div className="flex items-center gap-2 mt-1">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                    <span className="text-xs font-mono text-zinc-400 group-hover:text-white transition-colors uppercase">
+                    <span className="text-xs bebas text-zinc-400 group-hover:text-white transition-colors uppercase">
                       {artist.location}
                     </span>
                   </div>

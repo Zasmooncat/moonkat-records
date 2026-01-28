@@ -5,7 +5,10 @@ import { HiMenu, HiX } from "react-icons/hi";
 import fondo from "../assets/images/fondo/textura_industrial.jpg"
 import fondovideo from "../assets/video/amoeba3D.mp4"
 import logo from "../assets/images/logos/isotipo2.png";
-import hoverVideo from "../assets/video/hover.mp4";
+import hoverVideoReleases from "../assets/video/glitchtd3.mp4";
+import hoverVideoArtists from "../assets/video/glitchtd2.mp4";
+import hoverVideoMerch from "../assets/video/glitchtd.mp4";
+import hoverVideoContact from "../assets/video/glitchtd3.mp4";
 
 import SubscribeModal from "../components/SubscribeModal";
 import SendDemosModal from "../components/SendDemosModal";
@@ -118,10 +121,10 @@ const Home = () => {
   };
 
   const navLinks = [
-    { name: "RELEASES", id: "releases" },
-    { name: "ARTISTS", id: "artists" },
-    { name: "MERCH", id: "merch" },
-    { name: "CONTACT", id: "contact" }
+    { name: "RELEASES", id: "releases", video: hoverVideoReleases },
+    { name: "ARTISTS", id: "artists", video: hoverVideoArtists },
+    { name: "MERCH", id: "merch", video: hoverVideoMerch },
+    { name: "CONTACT", id: "contact", video: hoverVideoContact }
   ];
 
   return (
@@ -132,9 +135,16 @@ const Home = () => {
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${fondo})` }}
       />
+      <video
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-80"
+        src={fondovideo}
+        autoPlay
+        loop
+        muted
+      ></video>
 
       {/* ===== DARK OVERLAY ===== */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/80 via-black/60 to-black/20" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/20 to-black" />
 
 
       {/* ================= HAMBURGER MENU (MOBILE ONLY) ================= */}
@@ -151,7 +161,7 @@ const Home = () => {
       <div
         className={`fixed inset-0 bg-black/80 backdrop-blur-md z-40 flex flex-col items-center justify-center transition-all duration-500 ease-in-out md:hidden ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
-        <div className="flex flex-col gap-8 text-center px-10">
+        <div className="flex flex-col gap-8 text-center px-10 font-sans">
           {navLinks.map((link) => (
             <button
               key={link.name}
@@ -186,21 +196,21 @@ const Home = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           />
 
-          <h1 ref={titleRef} className="text-4xl uppercase md:text-7xl font-bold leading-tight tracking-wider">
+          <h1 ref={titleRef} className="titulo text-3xl uppercase md:text-6xl font-bold leading-tight tracking-wider">
             <div className="inline-block">Drum & Bass</div> <br />
             <div className="inline-block text-pink-100">Underground</div> <br />
             <div className="inline-block">Culture</div>
           </h1>
 
-          <div ref={textRef} className="opacity-0">
-            <p className="mt-8 max-w-lg text-zinc-300 text-lg leading-relaxed border-t border-white/20 pt-6">
-              <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on dubby, deep, emotional and futuristic Drum & Bass and Jungle music.
+          <div ref={textRef} className="opacity-0 bebas">
+            <p className="mt-8 max-w-lg text-zinc-300  leading-relaxed border-t border-white/20 pt-6">
+              <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass and Jungle music.
             </p>
             <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
               Hit subscribe to get promos.
             </p>
           </div>
-          <div ref={buttonsRef} className="mt-10 flex gap-6 items-center opacity-0">
+          <div ref={buttonsRef} className="mt-10 flex gap-6 items-center opacity-0 font-sans-custom">
             <button
               className="boton-elegante"
               onClick={() => setIsSubscribeOpen(true)}
@@ -234,7 +244,7 @@ const Home = () => {
                `}
             >
               <video
-                src={hoverVideo}
+                src={item.video}
                 autoPlay
                 loop
                 muted
