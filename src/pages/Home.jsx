@@ -30,8 +30,8 @@ const Home = () => {
 
   const tracks = [
     {
-      title: "Love You Don't Know Me (ft. Mr Kickz)",
-      artist: "Moonkat",
+      title: "Love You Don't Know Me (Mooncat Remix)",
+      artist: "Mr.Kickz",
       src: audio1
     },
     {
