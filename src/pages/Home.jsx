@@ -197,7 +197,7 @@ const Home = () => {
             <button
               key={link.name}
               onClick={() => scrollToSection(link.id)}
-              className="text-4xl font-heading font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
+              className="text-3xl font-zen font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
             >
               {link.name}
             </button>
@@ -236,7 +236,7 @@ const Home = () => {
 
           <div ref={textRef} className="bebas">
             <p className="mt-8 max-w-lg text-zinc-300  leading-relaxed border-t border-white/20 pt-6">
-              <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass and Jungle music.
+              <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.
             </p>
             <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
               Hit subscribe to get promos.
@@ -290,10 +290,10 @@ const Home = () => {
               />
 
               <div className="relative z-10 flex flex-col h-full justify-end">
-                <h3 className="text-zinc-100 font-heading tracking-[0.2em] text-right group-hover:text-white transition-colors uppercase text-sm md:text-base leading-none">
+                <h3 className=" font-zen text-pink-100 tracking-[0.2em] text-right group-hover:text-white transition-colors uppercase text-sm md:text-base leading-none">
                   {item.name}
                 </h3>
-                <div className="h-[1px] w-0 group-hover:w-12 bg-pink-400 mt-2 self-end transition-all duration-500 opacity-0 group-hover:opacity-100" />
+                {/* <div className="h-[1px] w-0 group-hover:w-12 bg-pink-400 mt-2 self-end transition-all duration-500 opacity-0 group-hover:opacity-100" /> */}
               </div>
             </div>
           ))}
