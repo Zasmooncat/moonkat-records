@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute, FaVolumeDown } from "react-icons/fa";
 import { gsap } from "gsap";
 
-const MusicPlayer = ({ tracks }) => {
+const MusicPlayer = forwardRef(({ tracks }, ref) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [volume, setVolume] = useState(1);
@@ -13,6 +13,8 @@ const MusicPlayer = ({ tracks }) => {
     const containerRef = useRef(null);
     const textRef = useRef(null);
     const titleContainerRef = useRef(null);
+
+    useImperativeHandle(ref, () => containerRef.current);
 
     // Guard clause: if no tracks, don't render or render placeholder
     if (!tracks || tracks.length === 0) return null;
@@ -61,14 +63,6 @@ const MusicPlayer = ({ tracks }) => {
     };
 
     useEffect(() => {
-        // Fade in on mount
-        gsap.fromTo(containerRef.current,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 1, delay: 2, ease: "power3.out" }
-        );
-    }, []);
-
-    useEffect(() => {
         // Dynamic Marquee logic
         const textEl = textRef.current;
         const containerEl = titleContainerRef.current;
@@ -99,7 +93,7 @@ const MusicPlayer = ({ tracks }) => {
     return (
         <div
             ref={containerRef}
-            className="fixed bottom-6 right-6 z-50 flex items-center gap-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-full py-3 px-5 transition-all hover:bg-black/60 hover:border-white/30"
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-full py-3 px-5 transition-all hover:bg-black/60 hover:border-white/30 opacity-0 invisible"
         >
             <audio
                 ref={audioRef}
@@ -178,6 +172,6 @@ const MusicPlayer = ({ tracks }) => {
 
         </div>
     );
-};
+});
 
 export default MusicPlayer;

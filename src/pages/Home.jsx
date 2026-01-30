@@ -25,6 +25,7 @@ const Home = () => {
   const textRef = useRef(null);
   const buttonsRef = useRef(null);
   const navRef = useRef(null);
+  const headerRef = useRef(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -52,64 +53,87 @@ const Home = () => {
   ];
 
   const [videoReady, setVideoReady] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      setFontsReady(true);
+    });
+  }, []);
 
   useEffect(() => {
     // Initial Load Animations
-    if (!videoReady) return;
+    if (!videoReady || !fontsReady) return;
 
-    const titleLines = titleRef.current.children;
+    const titleRefWords = titleRef.current ? titleRef.current.querySelectorAll(".word-wrapper") : [];
+    const textChars = textRef.current ? textRef.current.querySelectorAll(".char") : [];
+    const buttons = buttonsRef.current;
     const navItems = navRef.current ? navRef.current.children : [];
+    const logoEl = logoRef.current;
+    const headerEl = headerRef.current;
+    const playerEl = playerRef.current;
+
+    // Global Header (Layout component)
+    const globalHeader = document.querySelector("header.fixed");
 
     const ctx = gsap.context(() => {
-      const allElements = [
-        logoRef.current,
-        ...Array.from(titleLines),
-        textRef.current,
-        buttonsRef.current,
-        ...Array.from(navItems)
-      ].filter(el => el !== null);
+      const tl = gsap.timeline();
 
-      // 0. Initial state - Hidden
-      gsap.set(allElements, { opacity: 0, visibility: "visible" });
-
-      // 1. Independent Random Flickering for each element
-      allElements.forEach((el) => {
-        const tl = gsap.timeline({
-          delay: Math.random() * 0.3 // Random start delay for each tube
-        });
-
-        const flickerCount = 4 + Math.floor(Math.random() * 4); // 4 to 8 flickers
-
-        for (let i = 0; i < flickerCount; i++) {
-          tl.to(el, {
-            opacity: Math.random() > 0.6 ? 0.3 : 0.8,
-            duration: 0.03 + Math.random() * 0.08,
-            filter: Math.random() > 0.5 ? "drop-shadow(0 0 10px rgba(255,192,203,0.3))" : "none"
-          })
-            .to(el, {
-              opacity: 0,
-              duration: 0.02 + Math.random() * 0.05
-            });
-        }
-
-        // Final turn on with a little "pop"
-        tl.to(el, {
-          opacity: 1,
-          scale: 1.02,
-          filter: "drop-shadow(0 0 15px rgba(255,192,203,0.6))",
-          duration: 0.1,
-          ease: "power2.out"
-        })
-          .to(el, {
-            scale: 1,
-            filter: "none",
-            duration: 0.3,
-            onComplete: () => {
-              // Force visibility and clear GSAP styles so CSS hovers work
-              gsap.set(el, { clearProps: "all", opacity: 1 });
-            }
-          });
+      // 1. Initial State: Hide all
+      gsap.set([logoEl, headerEl, globalHeader, playerEl, titleRef.current, textRef.current, ...Array.from(titleRefWords), ...Array.from(textChars), buttons, ...Array.from(navItems)], {
+        autoAlpha: 0
       });
+
+      // 2. PHASE 1: Title Words Entrance (Word by Word)
+      tl.set(titleRef.current, { autoAlpha: 1 }); // Show container
+      tl.fromTo(titleRefWords,
+        {
+          autoAlpha: 0,
+          y: "100vh"
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.15,
+          stagger: 0.15,
+          ease: "power2.inOut"
+        }
+      );
+
+      // 3. PHASE 2: Text Letter Flicker (Simultaneous Start)
+      tl.set(textRef.current, { autoAlpha: 1 }, "phase2Start"); // Show container
+      tl.add("phase2Start", "+=0.05");
+      Array.from(textChars).forEach((char) => {
+        const charTl = gsap.timeline();
+        const flickerCount = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < flickerCount; i++) {
+          charTl.to(char, {
+            autoAlpha: Math.random() > 0.5 ? 0.9 : 0.1,
+            duration: 0.02 + Math.random() * 0.04,
+          }).to(char, {
+            autoAlpha: 0,
+            duration: 0.01 + Math.random() * 0.03,
+          });
+        }
+        charTl.to(char, { autoAlpha: 1, duration: 0.1, ease: "power2.out" });
+
+        tl.add(charTl, "phase2Start");
+      });
+
+      // 4. PHASE 3: Logo, Header, Player, Buttons and Nav Fade-in
+      tl.to([logoEl, headerEl, globalHeader, playerEl, buttons, navRef.current, ...Array.from(navItems)], {
+        autoAlpha: 1,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power2.out",
+        onComplete: () => {
+          // No clearProps on the containers that have opacity-0 class 
+          // to avoid them jumping back to hidden. Just clear children.
+          gsap.set([...Array.from(titleRefWords), ...Array.from(textChars)], { clearProps: "all" });
+        }
+      }, "+=0.1");
+
     });
 
     return () => ctx.revert();
@@ -173,7 +197,7 @@ const Home = () => {
 
 
       {/* ================= MOBILE HEADER (LOGO + HAMBURGER) ================= */}
-      <div className="absolute top-20 left-6 right-6 flex md:hidden items-center justify-between z-50">
+      <div ref={headerRef} className="absolute top-20 left-6 right-6 flex md:hidden items-center justify-between z-50 opacity-0">
         <img
           src={logo}
           alt="Moonkat Records Logo"
@@ -220,29 +244,46 @@ const Home = () => {
 
         <div className="flex flex-col justify-center">
           {/* Desktop Logo Only */}
+
           <img
             ref={logoRef}
             src={logo}
             alt="Moonkat Records Logo"
-            className="hidden md:block h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105"
+            className="hidden md:block h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105 opacity-0"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           />
 
-          <h1 ref={titleRef} className="titulo text-3xl uppercase md:text-6xl font-bold leading-tight tracking-wider">
-            <div className="inline-block ">Drum & Bass</div> <br />
-            <div className="inline-block text-pink-100">Underground</div> <br />
-            <div className="inline-block">Culture</div>
+          <h1 ref={titleRef} className="titulo text-3xl uppercase md:text-6xl font-bold leading-tight tracking-wider opacity-0">
+            <div className="flex flex-wrap gap-x-4">
+              {["Drum", "&", "Bass"].map((word, i) => (
+                <span key={i} className="word-wrapper inline-block">{word}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-x-4 text-pink-100">
+              {["Underground"].map((word, i) => (
+                <span key={i} className="word-wrapper inline-block">{word}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-x-4">
+              {["Culture"].map((word, i) => (
+                <span key={i} className="word-wrapper inline-block">{word}</span>
+              ))}
+            </div>
           </h1>
 
-          <div ref={textRef} className="bebas">
-            <p className="mt-8 max-w-lg text-zinc-300  leading-relaxed border-t border-white/20 pt-6">
-              <span className="font-bold text-white">Moonkat Records ®</span> — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.
+          <div ref={textRef} className="bebas opacity-0">
+            <p className="mt-8 max-w-lg text-zinc-300 leading-relaxed border-t border-white/20 pt-6">
+              {"Moonkat Records ® — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.".split("").map((char, i) => (
+                <span key={i} className="char inline-block">{char === " " ? "\u00A0" : char}</span>
+              ))}
             </p>
             <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
-              Hit subscribe to get promos.
+              {"Hit subscribe to get promos.".split("").map((char, i) => (
+                <span key={i} className="char inline-block">{char === " " ? "\u00A0" : char}</span>
+              ))}
             </p>
           </div>
-          <div ref={buttonsRef} className="mt-8 md:mt-10 flex gap-6 items-center font-sans-custom">
+          <div ref={buttonsRef} className="mt-8 md:mt-10 flex gap-6 items-center font-sans-custom opacity-0">
             <button
               className="boton-elegante"
               onClick={() => setIsSubscribeOpen(true)}
@@ -264,17 +305,17 @@ const Home = () => {
 
 
         {/* ===== RIGHT COLUMN (NAVIGATION) ===== */}
-        <div ref={navRef} className="hidden md:grid grid-cols-2 gap-4 w-full max-w-lg ml-auto">
+        <div ref={navRef} className="hidden md:grid grid-cols-2 gap-4 w-full max-w-lg ml-auto opacity-0">
           {navLinks.map((item) => (
             <div
               key={item.name}
               onClick={() => scrollToSection(item.id)}
               className={`
-                 group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl 
+                 group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl
                  border-t border-l border-white/30 border-r border-b border-white/5
                  flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
                  hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
-                 rounded-xl
+                  rounded-2xl
                `}
             >
               {/* Liquid Reflection Overlay */}
@@ -311,7 +352,7 @@ const Home = () => {
         onClose={() => setIsSendDemosOpen(false)}
       />
 
-      <MusicPlayer tracks={tracks} />
+      <MusicPlayer ref={playerRef} tracks={tracks} />
 
     </section>
   );
