@@ -14,10 +14,10 @@ import SubscribeModal from "../components/SubscribeModal";
 import SendDemosModal from "../components/SendDemosModal";
 import MusicPlayer from "../components/MusicPlayer";
 
-import audio1 from "../assets/audio/LoveYouDontKnowMe_feat_Mrkickz_mst-6.wav";
-import audio2 from "../assets/audio/mooncat-horizons_ms4.wav";
-import audio3 from "../assets/audio/Mooncat - Green Horns.wav";
-import audio4 from "../assets/audio/forgiven_kiamya_Mooncat_remix.wav";
+import audio1 from "../assets/audio/LoveYouDontKnowMe_feat_Mrkickz_mst-6.mp3";
+import audio2 from "../assets/audio/mooncat-horizons_ms4.mp3";
+import audio3 from "../assets/audio/Mooncat - Green Horns.mp3";
+import audio4 from "../assets/audio/forgiven_kiamya_Mooncat_remix.mp3";
 
 const Home = () => {
   const logoRef = useRef(null);
@@ -313,7 +313,7 @@ const Home = () => {
               onClick={() => scrollToSection(item.id)}
               className={`
                  group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl
-                 border-t border-l border-white/30 border-r border-b border-white/5
+                 border-t border-l border-white/50 border-r border-b border-white/5
                  flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
                  hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
                   rounded-2xl

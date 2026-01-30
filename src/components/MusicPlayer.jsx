@@ -113,7 +113,7 @@ const MusicPlayer = forwardRef(({ tracks }, ref) => {
     return (
         <div
             ref={containerRef}
-            className="fixed bottom-6 right-6 z-50 flex items-center gap-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-full py-3 px-5 transition-all hover:bg-black/60 hover:border-white/30 opacity-0 invisible"
+            className="fixed bottom-6 right-5 z-50 flex items-center  gap-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-full py-3 px-5 transition-all hover:bg-black/60 hover:border-white/30 opacity-0 invisible"
         >
             <audio
                 ref={audioRef}
