@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
-import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute, FaVolumeDown } from "react-icons/fa";
+import { FaPlay, FaPause, FaStepForward, FaStepBackward } from "react-icons/fa";
 import { gsap } from "gsap";
 
 const MusicPlayer = forwardRef(({ tracks }, ref) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-    const [volume, setVolume] = useState(1);
-    const [isMuted, setIsMuted] = useState(false);
-    const [showVolume, setShowVolume] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
     const audioRef = useRef(null);
     const containerRef = useRef(null);
@@ -22,10 +21,20 @@ const MusicPlayer = forwardRef(({ tracks }, ref) => {
     const currentTrack = tracks[currentTrackIndex];
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = isMuted ? 0 : volume;
-        }
-    }, [volume, isMuted]);
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const updateTime = () => setCurrentTime(audio.currentTime);
+        const updateDuration = () => setDuration(audio.duration);
+
+        audio.addEventListener('timeupdate', updateTime);
+        audio.addEventListener('loadedmetadata', updateDuration);
+
+        return () => {
+            audio.removeEventListener('timeupdate', updateTime);
+            audio.removeEventListener('loadedmetadata', updateDuration);
+        };
+    }, [currentTrackIndex]);
 
     useEffect(() => {
         if (isPlaying && audioRef.current) {
@@ -55,11 +64,22 @@ const MusicPlayer = forwardRef(({ tracks }, ref) => {
         setIsPlaying(true);
     };
 
-    const handleVolumeChange = (e) => {
-        const newVolume = parseFloat(e.target.value);
-        setVolume(newVolume);
-        if (newVolume > 0 && isMuted) setIsMuted(false);
-        if (newVolume === 0) setIsMuted(true);
+    const handleProgressClick = (e) => {
+        const progressBar = e.currentTarget;
+        const clickX = e.clientX - progressBar.getBoundingClientRect().left;
+        const width = progressBar.offsetWidth;
+        const newTime = (clickX / width) * duration;
+        if (audioRef.current) {
+            audioRef.current.currentTime = newTime;
+            setCurrentTime(newTime);
+        }
+    };
+
+    const formatTime = (time) => {
+        if (isNaN(time)) return "0:00";
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
     useEffect(() => {
@@ -119,12 +139,19 @@ const MusicPlayer = forwardRef(({ tracks }, ref) => {
                 </button>
             </div>
 
-            {/* Track Info (Dynamic Marquee) */}
+            {/* Track Info with Integrated Progress Bar */}
             <div
                 ref={titleContainerRef}
-                className="overflow-hidden w-32 md:w-48 h-5 relative flex items-center mask-image-linear-gradient"
+                onClick={handleProgressClick}
+                className="overflow-hidden w-32 md:w-48 h-5 relative flex items-center mask-image-linear-gradient cursor-pointer group"
             >
-                <div ref={textRef} className="whitespace-nowrap text-xs font-mono text-zinc-300 uppercase tracking-widest absolute left-0">
+                {/* Progress Background */}
+                <div
+                    className="absolute inset-0 bg-purple-700/60 transition-all"
+                    style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+                />
+                {/* Track Text */}
+                <div ref={textRef} className="whitespace-nowrap text-xs font-mono text-zinc-300 uppercase tracking-widest absolute left-0 z-10 px-2">
                     <span className="font-bold text-white">{currentTrack.artist}</span> - {currentTrack.title}
                 </div>
             </div>
@@ -144,31 +171,6 @@ const MusicPlayer = forwardRef(({ tracks }, ref) => {
                 ))}
             </div>
 
-            {/* Volume Control */}
-            <div
-                className="relative flex items-center"
-                onMouseEnter={() => setShowVolume(true)}
-                onMouseLeave={() => setShowVolume(false)}
-            >
-                <button onClick={() => setIsMuted(!isMuted)} className="text-zinc-400 hover:text-white transition-colors ml-2">
-                    {isMuted || volume === 0 ? <FaVolumeMute size={14} /> : volume < 0.5 ? <FaVolumeDown size={14} /> : <FaVolumeUp size={14} />}
-                </button>
-
-                <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 p-2 rounded-lg transition-all duration-300 ${showVolume ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"}`}>
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        value={isMuted ? 0 : volume}
-                        onChange={handleVolumeChange}
-                        className="w-24 h-1 bg-zinc-600 rounded-lg appearance-none cursor-pointer accent-purple-500 -rotate-90 origin-bottom translate-y-12 translate-x-1"
-                        style={{ width: "80px", height: "4px" }}
-                    />
-                    {/* Spacer for rotation */}
-                    <div className="h-20 w-4"></div>
-                </div>
-            </div>
 
         </div>
     );
