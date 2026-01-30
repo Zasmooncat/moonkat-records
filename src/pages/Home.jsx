@@ -154,7 +154,8 @@ const Home = () => {
     setIsMenuOpen(false);
     const el = document.getElementById(id);
     if (el) {
-      const offset = 0; // Enough space to keep the title in view
+      // Different offsets for different sections
+      const offset = (id === 'releases' || id === 'artists') ? 120 : 0;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = el.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
