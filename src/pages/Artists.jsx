@@ -91,13 +91,13 @@ const Artists = () => {
 
               {/* Content Below */}
               <div className="flex flex-col">
-                <h3 className="font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase text-xl leading-tight">
+                <h3 className="font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase text-sm leading-tight">
                   {artist.name}
                 </h3>
 
                 {artist.location && (
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 bg-pink-300 rounded-full animate-pulse"></span>
                     <span className="text-xs bebas text-zinc-400 group-hover:text-white transition-colors uppercase">
                       {artist.location}
                     </span>
