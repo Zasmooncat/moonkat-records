@@ -154,7 +154,7 @@ const Home = () => {
     setIsMenuOpen(false);
     const el = document.getElementById(id);
     if (el) {
-      const offset = 80; // Enough space to keep the title in view
+      const offset = 0; // Enough space to keep the title in view
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = el.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;

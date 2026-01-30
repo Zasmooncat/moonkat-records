@@ -57,7 +57,7 @@ const Releases = () => {
   }, [releases]);
 
   return (
-    <section ref={sectionRef} id="releases" className=" px-6 md:px-14  min-h-screen relative overflow-hidden">
+    <section ref={sectionRef} id="releases" className="mt-10 px-6 md:px-14  min-h-screen relative overflow-hidden">
 
       {/* ===== BACKGROUND IMAGE ===== */}
       {/* <div
