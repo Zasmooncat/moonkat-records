@@ -16,7 +16,7 @@ import MusicPlayer from "../components/MusicPlayer";
 
 import audio1 from "../assets/audio/LoveYouDontKnowMe_feat_Mrkickz_mst-6.mp3";
 import audio2 from "../assets/audio/mooncat-horizons_ms4.mp3";
-import audio3 from "../assets/audio/Mooncat - Green Horns.mp3";
+import audio3 from "../assets/audio/Mooncat-Green Horns.mp3";
 import audio4 from "../assets/audio/forgiven_kiamya_Mooncat_remix.mp3";
 
 const Home = () => {
