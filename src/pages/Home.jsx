@@ -221,7 +221,7 @@ const Home = () => {
             <button
               key={link.name}
               onClick={() => scrollToSection(link.id)}
-              className="text-3xl font-zen font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
+              className="text-3xl titulo font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
             >
               {link.name}
             </button>
