@@ -3,8 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from '../sanity/client';
 import FlickeringTitle from '../components/FlickeringTitle';
-import fondo from "../assets/images/fondo/textura_industrial.jpg";
-import fondovideo from "../assets/video/amoeba3D2.mp4";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,7 +56,7 @@ const Releases = () => {
   }, [releases]);
 
   return (
-    <section ref={sectionRef} id="releases" className="mt-10 px-6 md:px-14  min-h-screen relative overflow-hidden">
+    <section ref={sectionRef} id="releases" className="mt-40 px-6 md:px-14  min-h-screen relative overflow-hidden">
 
       {/* ===== BACKGROUND IMAGE ===== */}
       {/* <div
