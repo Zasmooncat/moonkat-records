@@ -318,8 +318,8 @@ const Home = () => {
               key={item.name}
               onClick={() => scrollToSection(item.id)}
               className={`
-                 group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl
-                 border-t border-l border-white/5 border-r border-b border-white/5
+                 group relative aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur
+                   border-r-2 border-b-2 border-white/20
                  flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
                  hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]
                   rounded-2xl
