@@ -16,8 +16,8 @@ import MusicPlayer from "../components/MusicPlayer";
 
 import audio1 from "../assets/audio/LoveYouDontKnowMe_feat_Mrkickz_mst-6.mp3";
 import audio2 from "../assets/audio/mooncat-horizons_ms4.mp3";
-import audio3 from "../assets/audio/Mooncat-Green Horns.mp3";
-import audio4 from "../assets/audio/forgiven_kiamya_Mooncat_remix.mp3";
+import audio3 from "../assets/audio/Mooncat-Green-Horns.mp3";
+import audio4 from "../assets/audio/forgiven_kiamya_remix_mxmix.mp3";
 
 const Home = () => {
   const logoRef = useRef(null);
@@ -155,7 +155,7 @@ const Home = () => {
     const el = document.getElementById(id);
     if (el) {
       // Different offsets for different sections
-      const offset = (id === 'releases' || id === 'artists') ? 120 : 0;
+      const offset = (id === 'releases') ? 60 : 0;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = el.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -274,13 +274,19 @@ const Home = () => {
 
           <div ref={textRef} className="bebas opacity-0">
             <p className="mt-8 max-w-lg text-zinc-300 leading-relaxed border-t border-white/20 pt-6">
-              {"Moonkat Records ® — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.".split("").map((char, i) => (
-                <span key={i} className="char inline-block">{char === " " ? "\u00A0" : char}</span>
+              {"Moonkat Records ® — Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.".split(" ").map((word, i, arr) => (
+                <span key={i}>
+                  <span className="char inline-block">{word}</span>
+                  {i < arr.length - 1 && " "}
+                </span>
               ))}
             </p>
             <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
-              {"Hit subscribe to get promos.".split("").map((char, i) => (
-                <span key={i} className="char inline-block">{char === " " ? "\u00A0" : char}</span>
+              {"Hit subscribe to get promos.".split(" ").map((word, i, arr) => (
+                <span key={i}>
+                  <span className="char inline-block">{word}</span>
+                  {i < arr.length - 1 && " "}
+                </span>
               ))}
             </p>
           </div>
@@ -313,14 +319,14 @@ const Home = () => {
               onClick={() => scrollToSection(item.id)}
               className={`
                  group relative aspect-square bg-gradient from-white/50 via-transparent to-white/50 backdrop-blur-xl
-                 border-t border-l border-white/50 border-r border-b border-white/5
+                 border-t border-l border-white/5 border-r border-b border-white/5
                  flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
-                 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
+                 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]
                   rounded-2xl
                `}
             >
               {/* Liquid Reflection Overlay */}
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               <video
                 src={item.video}

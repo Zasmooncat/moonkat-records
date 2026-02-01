@@ -78,7 +78,7 @@ const Artists = () => {
               className="group flex flex-col gap-5 cursor-pointer"
             >
               {/* Image Card (Styled like Home Nav) */}
-              <div className="relative aspect-square w-full bg-black/10 backdrop-blur-md border border-white/20 overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+              <div className="relative aspect-square  bg-black/10 backdrop-blur-md border border-white/20 overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
                 <img
                   src={urlFor(artist.image).width(600).url()}

@@ -6,7 +6,7 @@ const Header = () => {
   const [isSendDemosOpen, setIsSendDemosOpen] = useState(false);
 
   return (
-    <header className="fixed w-full top-0 left-0 z-50 pointer-events-none">
+    <header className="fixed w-full top-0 left-0 z-50 pointer-events-none opacity-0">
       <div className="flex justify-between items-start px-5 md:px-8 py-4 bg-gradient-to-b from-black/80 to-transparent">
 
         {/* LOGO / BRANDING */}
