@@ -61,12 +61,17 @@ serve(async (req) => {
                   margin: 0 auto;
                   padding: 20px;
                 }
-                .header {
+                 .header {
                   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                   color: white;
                   padding: 30px;
                   border-radius: 10px 10px 0 0;
                   text-align: center;
+                }
+                .logo {
+                  max-width: 150px;
+                  height: auto;
+                  margin-bottom: 15px;
                 }
                 .content {
                   background: #f9f9f9;
@@ -93,6 +98,7 @@ serve(async (req) => {
             </head>
             <body>
               <div class="header">
+                <img src="https://moonkatrecords.com/moonkat-logo.svg" alt="Moonkat Records" class="logo" />
                 <h1>🎵 Moonkat Records</h1>
               </div>
               <div class="content">
