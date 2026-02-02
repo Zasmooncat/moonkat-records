@@ -4,45 +4,48 @@ import { supabase } from "../lib/supabase";
 
 
 const SubscribeModal = ({ isOpen, onClose }) => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setSubmitMessage("");
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
 
-  try {
-    const { error } = await supabase
-      .from("subscriptions")
-      .insert([{ email }]);
+    try {
+      const { error } = await supabase
+        .from("subscriptions")
+        .insert([{ name, email }]);
 
-    if (error) {
-      if (error.code === "23505") {
-        setSubmitMessage("This email is already subscribed.");
-      } else {
-        throw error;
+      if (error) {
+        if (error.code === "23505") {
+          setSubmitMessage("This email is already subscribed.");
+        } else {
+          throw error;
+        }
+        return;
       }
-      return;
+
+      setSubmitMessage("Thanks for subscribing! You'll receive our releases first.");
+      setName("");
+      setEmail("");
+
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+
+    } catch (err) {
+      setSubmitMessage("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setSubmitMessage("Thanks for subscribing! You'll receive our releases first.");
-    setEmail("");
-
-    setTimeout(() => {
-      handleClose();
-    }, 2000);
-
-  } catch (err) {
-    setSubmitMessage("Something went wrong. Please try again.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
 
   const handleClose = () => {
+    setName("");
     setEmail("");
     setSubmitMessage("");
     onClose();
@@ -51,11 +54,11 @@ const SubscribeModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 px-4"
       onClick={handleClose}
     >
-      <div 
+      <div
         className="bg-zinc-900 rounded-lg p-8 max-w-md w-full relative"
         onClick={(e) => e.stopPropagation()}
       >
@@ -76,8 +79,26 @@ const SubscribeModal = ({ isOpen, onClose }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="name"
+              className="block text-white text-sm font-medium mb-2"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Your name"
+              className="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-opacity-50 transition-colors"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label
+              htmlFor="email"
               className="block text-white text-sm font-medium mb-2"
             >
               Email
