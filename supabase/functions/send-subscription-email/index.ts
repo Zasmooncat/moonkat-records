@@ -44,7 +44,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Moonkat Records <onboarding@resend.dev>',
+        from: 'Moonkat Records <hello@moonkatrecords.com>',
         to: [email],
         subject: 'Welcome to Moonkat Records!',
         html: `
