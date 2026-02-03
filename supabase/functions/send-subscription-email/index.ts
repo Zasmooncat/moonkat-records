@@ -62,10 +62,9 @@ serve(async (req) => {
                   padding: 20px;
                 }
                  .header {
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  background: linear-gradient(135deg, #171717ff 0%, #3a1d30ff 100%);
                   color: white;
                   padding: 30px;
-                  border-radius: 10px 10px 0 0;
                   text-align: center;
                 }
                 .logo {
@@ -98,8 +97,8 @@ serve(async (req) => {
             </head>
             <body>
               <div class="header">
-                <img src="https://moonkatrecords.com/moonkat-logo.svg" alt="Moonkat Records" class="logo" />
-                <h1>🎵 Moonkat Records</h1>
+                <img src="https://www.moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo" />
+                <h1>Moonkat Records</h1>
               </div>
               <div class="content">
                 <p class="greeting">Thank you for subscribing, ${name}!</p>
@@ -135,7 +134,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Moonkat Records <onboarding@resend.dev>',
+        from: 'Moonkat Records <hello@moonkatrecords.com>',
         to: ['moonkatrecords@gmail.com'],
         subject: '🎉 New Subscriber!',
         html: `
