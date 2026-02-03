@@ -62,7 +62,7 @@ serve(async (req) => {
                   padding: 20px;
                 }
                  .header {
-                  background: linear-gradient(135deg, #171717ff 0%, #3a1d30ff 100%);
+                  background: linear-gradient(135deg, #171717ff 0%, #4c2a40ff 100%);
                   color: white;
                   padding: 30px;
                   text-align: center;
@@ -90,7 +90,7 @@ serve(async (req) => {
                 .greeting {
                   font-size: 20px;
                   font-weight: bold;
-                  color: #667eea;
+                  color: #381e3cff;
                   margin-bottom: 20px;
                 }
               </style>
@@ -98,7 +98,7 @@ serve(async (req) => {
             <body>
               <div class="header">
                 <img src="https://www.moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo" />
-                <h1>Moonkat Records</h1>
+                <h1>MOONKAT RECORDS</h1>
               </div>
               <div class="content">
                 <p class="greeting">Thank you for subscribing, ${name}!</p>
@@ -106,7 +106,7 @@ serve(async (req) => {
                 <p>Stay tuned for amazing music!</p>
                 <p style="margin-top: 30px;">
                   <strong>Best regards,</strong><br>
-                  The Moonkat Records Team
+                  Moonkat Records
                 </p>
               </div>
               <div class="footer">
