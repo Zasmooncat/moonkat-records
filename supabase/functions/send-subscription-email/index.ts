@@ -68,7 +68,7 @@ serve(async (req) => {
                   text-align: center;
                 }
                 .logo {
-                  max-width: 150px;
+                  max-width: 300px;
                   height: auto;
                   margin-bottom: 15px;
                 }
@@ -98,7 +98,6 @@ serve(async (req) => {
             <body>
               <div class="header">
                 <img src="https://www.moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo" />
-                <h1>MOONKAT RECORDS</h1>
               </div>
               <div class="content">
                 <p class="greeting">Thank you for subscribing, ${name}!</p>
