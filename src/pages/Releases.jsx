@@ -91,12 +91,15 @@ const Releases = () => {
             className="group flex flex-col cursor-pointer"
           >
             {/* Image Card (Styled like Home Nav) */}
-            <div className="relative w-40 md:w-full bg-black/10 backdrop-blur-md border border-white overflow-hidden transition-all duration-300 group-hover:border-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+            <div className="relative w-40 md:w-full aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur border-r-2 border-b-2 border-white/20 overflow-hidden transition-all duration-500 group-hover:bg-white/[0.07] group-hover:border-white/60 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] rounded-2xl">
+              {/* Liquid Reflection Overlay */}
+              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
               <img
                 src={urlFor(r.cover).width(600).url()}
                 alt={r.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 relative z-0"
               />
               {/* Technical Dot */}
               <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
