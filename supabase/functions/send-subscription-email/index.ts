@@ -13,6 +13,8 @@ const corsHeaders = {
 interface SubscriptionData {
   name: string
   email: string
+  ip?: string
+  city?: string
 }
 
 serve(async (req) => {
@@ -23,7 +25,7 @@ serve(async (req) => {
 
   try {
     // Parse the request body
-    const { name, email }: SubscriptionData = await req.json()
+    const { name, email, ip, city }: SubscriptionData = await req.json()
 
     console.log(`Processing subscription for: ${name} (${email})`)
 
@@ -62,7 +64,7 @@ serve(async (req) => {
                   padding: 20px;
                 }
                  .header {
-                  background: linear-gradient(135deg, #171717ff 0%, #4c2a40ff 100%);
+                  background: linear-gradient(to bottom, #171717ff 0%, #653955ff 100%);
                   color: white;
                   padding: 30px;
                   text-align: center;
@@ -70,7 +72,7 @@ serve(async (req) => {
                 .logo {
                   max-width: 300px;
                   height: auto;
-                  margin-bottom: 15px;
+                 
                 }
                 .content {
                   background: #f9f9f9;
@@ -196,6 +198,18 @@ serve(async (req) => {
                   <div class="info-label">Email:</div>
                   <div>${email}</div>
                 </div>
+
+                ${city ? `
+                <div class="info-box">
+                  <div class="info-label">City:</div>
+                  <div>${city}</div>
+                </div>` : ''}
+
+                ${ip ? `
+                <div class="info-box">
+                  <div class="info-label">IP Address:</div>
+                  <div>${ip}</div>
+                </div>` : ''}
                 
                 <div class="info-box">
                   <div class="info-label">Subscribed:</div>

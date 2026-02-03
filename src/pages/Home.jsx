@@ -10,7 +10,7 @@ import hoverVideoArtists from "../assets/video/glitchtd2.mp4";
 import hoverVideoMerch from "../assets/video/glitchtd.mp4";
 import hoverVideoContact from "../assets/video/glitchtd3.mp4";
 
-import SubscribeModal from "../components/SubscribeModal";
+import SubscribeModal from "../components/SubscribeModal"; // Forced update
 import SendDemosModal from "../components/SendDemosModal";
 import MusicPlayer from "../components/MusicPlayer";
 
