@@ -71,7 +71,7 @@ const Releases = () => {
               muted
             ></video> */}
       {/* ===== DARK OVERLAY ===== */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-pink/70 to-black" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-pink-500/40 to-black" />
 
 
       <FlickeringTitle
@@ -106,7 +106,7 @@ const Releases = () => {
             </div>
 
             {/* Content Below */}
-            <div className="flex bg-black/30 mt-4 backdrop-blur-md flex-col">
+            <div className="flex bg-black/30 rounded-xl p-4 backdrop-blur-md flex-col">
               <div className="flex justify-between items-start mb-1">
                 <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
                   {r.title}
