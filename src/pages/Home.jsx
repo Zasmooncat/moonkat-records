@@ -179,7 +179,7 @@ const Home = () => {
   return (
     <section className="relative min-h-screen text-white px-6 md:px-14 md:py-10 overflow-hidden flex md:items-center items-start justify-center">
       <SEO
-        description="Moonkat Records - Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music."
+        description="Moonkat Records - Independent music label from Spain focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music."
       />
 
       {/* ===== BACKGROUND IMAGE ===== */}
@@ -278,15 +278,15 @@ const Home = () => {
 
           <div ref={textRef} className="bebas opacity-0">
             <p className="mt-8 max-w-lg text-zinc-300 leading-relaxed border-t border-white/20 pt-6">
-              {"Moonkat Records ® — Drum & Bass / Jungle label.".split(" ").map((word, i, arr) => (
+              {"Moonkat Records ® — Drum & Bass / Jungle music".split(" ").map((word, i, arr) => (
                 <span key={i}>
                   <span className="char inline-block">{word}</span>
                   {i < arr.length - 1 && " "}
                 </span>
               ))}
             </p>
-            <p className="mt-4 max-w-lg text-pink-200 text-lg leading-relaxed">
-              {"Hit subscribe to get promos.".split(" ").map((word, i, arr) => (
+            <p className="mt-4 max-w-lg text-pink-200 text-xl leading-relaxed">
+              {"Hit subscribe to get promos".split(" ").map((word, i, arr) => (
                 <span key={i}>
                   <span className="char inline-block">{word}</span>
                   {i < arr.length - 1 && " "}

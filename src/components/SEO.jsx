@@ -9,8 +9,8 @@ const SEO = ({
     type = 'website'
 }) => {
     const siteUrl = 'https://moonkatrecords.com';
-    const defaultTitle = 'Moonkat Records | Underground Drum & Bass / Jungle Label';
-    const defaultDesc = 'Independent label focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music. Stream, download and buy our latest releases.';
+    const defaultTitle = 'Moonkat Records';
+    const defaultDesc = 'Independent music label from Spain focused on deep, dubbed, emotional and futuristic Drum & Bass / Jungle music.';
 
     const fullTitle = title ? `${title} | Moonkat Records` : defaultTitle;
     const metaDesc = description || defaultDesc;
