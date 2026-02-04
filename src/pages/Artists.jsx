@@ -63,9 +63,11 @@ const Artists = () => {
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/30 via-black/60 to-pink-900/20" />
 
 
+
+
         <FlickeringTitle
           text="ARTISTS"
-          showUnderline={true}
+          // showUnderline={true}
           className="text-4xl md:text-7xl max-w-7xl mx-auto tracking-widest mb-16 tracking-tighter"
         />
 

@@ -74,11 +74,28 @@ const Releases = () => {
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-pink-500/40 to-black" />
 
 
+
+
       <FlickeringTitle
         text="RELEASES"
-        showUnderline={true}
-        className="text-4xl md:text-7xl max-w-7xl mx-auto tracking-wider mb-16 tracking-tighter"
+        // showUnderline={true}
+        className="text-4xl md:text-7xl max-w-7xl mx-auto tracking-wider mb-6 tracking-tighter"
       />
+
+      {/* GLOBAL BANDCAMP LINK */}
+      <div className="relative z-10 max-w-7xl mx-auto mb-16 flex justify-center px-2">
+        <p className="text-sm md:text-base text-zinc-400 font-mono tracking-[0.2em] uppercase opacity-60">
+          Stream & Download in{" "}
+          <a
+            href="https://moonkatrecords.bandcamp.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-pink-300 hover:text-white transition-colors duration-300"
+          >
+            Bandcamp
+          </a>
+        </p>
+      </div>
 
       <div className="relative z-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
         {releases.map((r, i) => (
@@ -107,20 +124,19 @@ const Releases = () => {
 
             {/* Content Below */}
             <div className="flex bg-black/30 rounded-xl p-4 backdrop-blur-md flex-col">
-              <div className="flex justify-between items-start mb-1">
-                <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
-                  {r.title}
-                </h3>
+              <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
+                {r.title}
+              </h3>
 
-              </div>
-              <p className="text-sm bebas text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider">
+
+              <p className="text-sm bebas text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider mb-0">
                 {r.artist?.name}
               </p>
             </div>
           </a>
         ))}
       </div>
-    </section>
+    </section >
   );
 };
 

@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FlickeringTitle = ({ text, className = "", showUnderline = false }) => {
+const FlickeringTitle = ({ text, className = "", showUnderline = false, Tag = "h2" }) => {
     const containerRef = useRef(null);
     const textContainerRef = useRef(null);
     const underlineRef = useRef(null);
@@ -52,7 +52,7 @@ const FlickeringTitle = ({ text, className = "", showUnderline = false }) => {
 
     return (
         <div ref={containerRef} className={`relative z-10 w-fit ${className}`}>
-            <h2
+            <Tag
                 ref={textContainerRef}
                 className="font-bold titulo text-white flex flex-wrap"
             >
@@ -63,7 +63,7 @@ const FlickeringTitle = ({ text, className = "", showUnderline = false }) => {
                         {char}
                     </span>
                 )))}
-            </h2>
+            </Tag>
             {showUnderline && (
                 <div
                     ref={underlineRef}
