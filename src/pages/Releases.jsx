@@ -71,7 +71,7 @@ const Releases = () => {
               muted
             ></video> */}
       {/* ===== DARK OVERLAY ===== */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-pink-500/40 to-black" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-pink-900/20 via-pink-400/30 to-black" />
 
 
 
@@ -123,13 +123,13 @@ const Releases = () => {
             </div>
 
             {/* Content Below */}
-            <div className="flex bg-black/30 rounded-xl p-4 backdrop-blur-md flex-col">
-              <h3 className="text-xs font-sans-custom tracking-widest text-white group-hover:text-pink-200 transition-colors uppercase  leading-tight">
+            <div className="flex border-r-2 border-b-2 border-pink-300/20 bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded p-4 backdrop-blur-md flex-col">
+              <h3 className="text-xs font-sans-custom font-bold tracking-widest text-zinc-100 group-hover:text-pink-200 transition-colors uppercase  leading-tight">
                 {r.title}
               </h3>
 
 
-              <p className="text-sm bebas text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider mb-0">
+              <p className="text-sm bebas mt-1 text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider ">
                 {r.artist?.name}
               </p>
             </div>
