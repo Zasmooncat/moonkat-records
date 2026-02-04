@@ -42,7 +42,7 @@ const SEO = ({
                     "@type": "Organization",
                     "name": "Moonkat Records",
                     "url": siteUrl,
-                    "logo": "https://moonkatrecords.com/moonkat-logo.png",
+                    "logo": "https://moonkatrecords.com/Isotipo2.png",
                     "sameAs": [
                         "https://moonkatrecords.bandcamp.com",
                         "https://www.instagram.com/moonkatrecords",
