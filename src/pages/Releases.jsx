@@ -123,7 +123,7 @@ const Releases = () => {
             </div>
 
             {/* Content Below */}
-            <div className="flex border-r-2 border-b-2 border-pink-300/20 bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded p-4 backdrop-blur-md flex-col">
+            <div className="flex  bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded md:p-4 p-2 backdrop-blur-md flex-col">
               <h3 className="text-xs font-sans-custom font-bold tracking-widest text-zinc-100 group-hover:text-pink-200 transition-colors uppercase  leading-tight">
                 {r.title}
               </h3>
