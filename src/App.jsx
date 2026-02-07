@@ -9,7 +9,8 @@ import Terms from "./pages/Terms";
 import { useEffect } from "react";
 
 import Promo from "./pages/Promo";
-
+import Unsubscribe from "./pages/Unsubscribe";
+import SecretSender from "./pages/SecretSender";
 // ScrollToTop component to handle scroll on route change
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -49,6 +50,8 @@ function App() {
         <Route path="/" element={<MainContent />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/promo/:slug" element={<Promo />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
+        <Route path="/admin/secret-sender" element={<SecretSender />} />
       </Routes>
     </Router>
   );
