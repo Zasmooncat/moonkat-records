@@ -11,13 +11,25 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface CampaignPayload {
-    adminKey: string
+interface ReleaseData {
     title: string
     artist: string
     coverUrl: string
-    promoUrl: string // The full link to /promo/slug
+    promoUrl: string
     description: string
+}
+
+interface NewsletterData {
+    subject: string
+    content: string
+    imageUrl?: string
+}
+
+interface CampaignPayload {
+    adminKey: string
+    type: 'release' | 'newsletter'
+    releaseData?: ReleaseData
+    newsletterData?: NewsletterData
 }
 
 serve(async (req) => {
@@ -33,8 +45,44 @@ serve(async (req) => {
             throw new Error('Unauthorized: Invalid Admin Key')
         }
 
-        if (!payload.title || !payload.promoUrl) {
-            throw new Error('Missing required campaign data')
+        // Validate Payload based on Type
+        let emailSubject = '';
+        let emailHtmlContent = '';
+
+        if (payload.type === 'release') {
+            if (!payload.releaseData) throw new Error('Missing releaseData');
+            const data = payload.releaseData;
+            emailSubject = `New Release: ${data.title} by ${data.artist}`;
+            emailHtmlContent = `
+                <img src="${data.coverUrl}" alt="${data.title}" class="cover">
+                <h1>${data.title}</h1>
+                <h2>${data.artist}</h2>
+                <p>${data.description}</p>
+                <a href="${data.promoUrl}" class="btn">Get Promo</a>
+                <p style="margin-top: 30px; font-size: 12px; color: #666;">
+                    Link expires in 5 minutes after opening.
+                </p>
+            `;
+        } else if (payload.type === 'newsletter') {
+            if (!payload.newsletterData) throw new Error('Missing newsletterData');
+            const data = payload.newsletterData;
+            emailSubject = data.subject || 'News from Moonkat Records';
+
+            // Optional Image for Newsletter
+            const imageBlock = data.imageUrl ? `<img src="${data.imageUrl}" alt="Newsletter Image" class="cover">` : '';
+
+            // Convert newlines to <br> for simple text content
+            const formattedContent = data.content.split('\n').join('<br>');
+
+            emailHtmlContent = `
+                ${imageBlock}
+                <h1>${emailSubject}</h1>
+                <div style="text-align: left; margin-top: 20px;">
+                    <p>${formattedContent}</p>
+                </div>
+            `;
+        } else {
+            throw new Error('Invalid campaign type');
         }
 
         // 2. Init Supabase Admin Client
@@ -51,27 +99,19 @@ serve(async (req) => {
             return new Response(JSON.stringify({ message: 'No active subscribers found.' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
         }
 
-        console.log(`Sending campaign to ${subscribers.length} subscribers...`)
+        console.log(`Sending ${payload.type} campaign to ${subscribers.length} subscribers...`)
 
-        // 4. Send Emails via Resend (Batching would be ideal, but simple loop for now)
-        // Resend Rate Limits apply. Ideally use Batch API or Queue.
-        // For MVP, we'll loop sequentially or parallel with Promise.all
-
+        // 4. Send Emails via Resend
         const emailPromises = subscribers.map(async (sub) => {
             const unsubscribeLink = `https://moonkatrecords.com/unsubscribe?id=${sub.id}`
 
-            try {
-                const res = await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${RESEND_API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        from: 'Moonkat Records <hello@moonkatrecords.com>',
-                        to: [sub.email],
-                        subject: `New Release: ${payload.title} by ${payload.artist}`,
-                        html: `
+            // Personalize content
+            // We can replace [Name] placeholder if we want, or just prepend generic greeting
+            const personalGreeting = payload.type === 'release'
+                ? `<p>Hey ${sub.name},</p>`
+                : `<p>Hi ${sub.name},</p>`;
+
+            const finalHtml = `
     <!DOCTYPE html>
     <html>
       <head>
@@ -81,12 +121,12 @@ serve(async (req) => {
           .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
           .header { background: #000; padding: 20px; text-align: center; border-bottom: 1px solid #222; }
           .logo { width: 150px; }
-          .content { padding: 40px 20px; text-align: center; }
+          .content { padding: 40px 20px; text-align: center; color: #ccc; }
           .cover { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; }
-          h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-          h2 { color: #ec4899; font-weight: normal; margin-top: 0; margin-bottom: 30px; }
-          p { color: #ccc; line-height: 1.6; margin-bottom: 30px; }
-          .btn { display: inline-block; background: #ec4899; color: white; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+          h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
+          h2 { color: #ec4899; font-weight: normal; margin-top: 0; margin-bottom: 30px; font-size: 18px; }
+          p { line-height: 1.6; margin-bottom: 20px; }
+          .btn { display: inline-block; background: #ec4899; color: white; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
           .btn:hover { background: #db2777; }
           .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #222; }
           .link { color: #666; text-decoration: underline; }
@@ -98,19 +138,8 @@ serve(async (req) => {
             <img src="https://moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo">
           </div>
           <div class="content">
-            <img src="${payload.coverUrl}" alt="${payload.title}" class="cover">
-            
-            <h1>${payload.title}</h1>
-            <h2>${payload.artist}</h2>
-            
-            <p>Hey ${sub.name},</p>
-            <p>${payload.description}</p>
-            
-            <a href="${payload.promoUrl}" class="btn">Get Promo</a>
-            
-            <p style="margin-top: 30px; font-size: 12px; color: #666;">
-                Link expires in 5 minutes after opening.
-            </p>
+            ${personalGreeting}
+            ${emailHtmlContent}
           </div>
           <div class="footer">
             <p>You received this email because you are a Moonkat Records subscriber.</p>
@@ -119,7 +148,20 @@ serve(async (req) => {
         </div>
       </body>
     </html>
-                    `
+            `;
+
+            try {
+                const res = await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${RESEND_API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        from: 'Moonkat Records <hello@moonkatrecords.com>',
+                        to: [sub.email],
+                        subject: emailSubject,
+                        html: finalHtml
                     })
                 })
                 return res.ok
@@ -129,12 +171,13 @@ serve(async (req) => {
             }
         })
 
-        await Promise.all(emailPromises)
+        const results = await Promise.all(emailPromises)
+        const successCount = results.filter(Boolean).length
 
         return new Response(
             JSON.stringify({
                 success: true,
-                message: `Campaign sent to ${subscribers.length} subscribers`
+                message: `Sent to ${successCount} of ${subscribers.length} subscribers`
             }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )

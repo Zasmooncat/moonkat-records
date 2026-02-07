@@ -26,19 +26,16 @@ const SubscribeModal = ({ isOpen, onClose }) => {
     let city = null;
 
     try {
+
       // Fetch IP data (simplified)
       try {
         const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
-        console.log("IP Fetched:", data);
         ip = data.ip;
         // City won't be available from ipify, but we ensure at least IP
       } catch (geoError) {
         console.error("Error fetching IP:", geoError);
       }
-
-      // CRITICAL DEBUG: Visible alert
-      alert(`DEBUG PAYLOAD:\nIP: ${ip}\nName: ${name}`);
 
       const { error } = await supabase
         .from("subscriptions")
