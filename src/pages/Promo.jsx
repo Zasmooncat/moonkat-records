@@ -21,6 +21,50 @@ const Promo = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
+    const [timeLeft, setTimeLeft] = useState(null);
+
+    // Check for existing text/expiration on mount
+    useEffect(() => {
+        const stored = localStorage.getItem(`promo_${slug}`);
+        if (stored) {
+            const data = JSON.parse(stored);
+            const remaining = Math.max(0, Math.ceil((data.expiresAt - Date.now()) / 1000));
+
+            if (remaining > 0) {
+                setIsSubmitted(true);
+                setTimeLeft(remaining);
+            } else {
+                // Expired
+                setIsSubmitted(true);
+                setTimeLeft(0);
+            }
+        }
+    }, [slug]);
+
+    // Timer countdown effect
+    useEffect(() => {
+        if (timeLeft === null || timeLeft <= 0) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [timeLeft]);
+
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    };
+
+
 
 
     useEffect(() => {
@@ -89,7 +133,17 @@ const Promo = () => {
 
             if (error) throw error;
 
+            if (error) throw error;
+
+            // Set expiration 5 minutes from now
+            const expiresAt = Date.now() + 5 * 60 * 1000;
+            localStorage.setItem(`promo_${slug}`, JSON.stringify({
+                submitted: true,
+                expiresAt
+            }));
+
             setIsSubmitted(true);
+            setTimeLeft(5 * 60); // Start 300 seconds countdown
         } catch (err) {
             console.error("Error submitting feedback:", err);
             setSubmitError("Failed to submit feedback. Please try again.");
