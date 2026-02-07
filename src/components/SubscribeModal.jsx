@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom';
 import { HiX } from "react-icons/hi";
 import { supabase } from "../lib/supabase";
 
@@ -6,11 +7,18 @@ import { supabase } from "../lib/supabase";
 const SubscribeModal = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isAccepted, setIsAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isAccepted) {
+      setSubmitMessage("Please accept the terms and conditions.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitMessage("");
 
@@ -69,6 +77,7 @@ const SubscribeModal = ({ isOpen, onClose }) => {
   const handleClose = () => {
     setName("");
     setEmail("");
+    setIsAccepted(false);
     setSubmitMessage("");
     onClose();
   };
@@ -134,6 +143,19 @@ const SubscribeModal = ({ isOpen, onClose }) => {
               placeholder="your@email.com"
               className="w-full px-4 py-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:ring-opacity-50 transition-colors"
             />
+          </div>
+
+          <div className="mb-6 flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={isAccepted}
+              onChange={(e) => setIsAccepted(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-pink-500 focus:ring-pink-500 focus:ring-offset-zinc-900"
+            />
+            <label htmlFor="terms" className="text-xs text-zinc-300 leading-tight">
+              I have read and I accept the <Link to="/terms" className="text-pink-400 hover:text-pink-300 hover:underline" onClick={handleClose}>terms and conditions</Link>. I agree to share my name, email and IP address to receive promotional emails.
+            </label>
           </div>
 
           {submitMessage && (
