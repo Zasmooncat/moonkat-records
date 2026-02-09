@@ -12,13 +12,7 @@ import hoverVideoContact from "../assets/video/glitchtd3.mp4";
 
 import SubscribeModal from "../components/SubscribeModal"; // Forced update
 import SendDemosModal from "../components/SendDemosModal";
-import MusicPlayer from "../components/MusicPlayer";
 import SEO from "../components/SEO";
-
-import audio1 from "../assets/audio/LoveYouDontKnowMe_feat_Mrkickz_mst-6.mp3";
-import audio2 from "../assets/audio/mooncat-horizons_ms4.mp3";
-import audio3 from "../assets/audio/Mooncat-Green-Horns.mp3";
-import audio4 from "../assets/audio/forgiven_kiamya_remix_mxmix.mp3";
 
 const Home = () => {
   const logoRef = useRef(null);
@@ -30,32 +24,8 @@ const Home = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const tracks = [
-    {
-      title: "Love You Don't Know Me (Mooncat Remix)",
-      artist: "Mr.Kickz",
-      src: audio1
-    },
-    {
-      title: "Horizons",
-      artist: "Mooncat",
-      src: audio2
-    },
-    {
-      title: "Green Horns",
-      artist: "Mooncat",
-      src: audio3
-    },
-    {
-      title: "Forgiven (Mooncat Remix)",
-      artist: "Kiamya",
-      src: audio4
-    }
-  ];
-
   const [videoReady, setVideoReady] = useState(false);
   const [fontsReady, setFontsReady] = useState(false);
-  const playerRef = useRef(null);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -73,7 +43,6 @@ const Home = () => {
     const navItems = navRef.current ? navRef.current.children : [];
     const logoEl = logoRef.current;
     const headerEl = headerRef.current;
-    const playerEl = playerRef.current;
 
     // Global Header (Layout component)
     const globalHeader = document.querySelector("header.fixed");
@@ -82,7 +51,7 @@ const Home = () => {
       const tl = gsap.timeline();
 
       // 1. Initial State: Hide all
-      gsap.set([logoEl, headerEl, globalHeader, playerEl, titleRef.current, textRef.current, ...Array.from(titleRefWords), ...Array.from(textChars), buttons, ...Array.from(navItems)], {
+      gsap.set([logoEl, headerEl, globalHeader, titleRef.current, textRef.current, ...Array.from(titleRefWords), ...Array.from(textChars), buttons, ...Array.from(navItems)], {
         autoAlpha: 0
       });
 
@@ -123,7 +92,7 @@ const Home = () => {
       });
 
       // 4. PHASE 3: Logo, Header, Player, Buttons and Nav Fade-in
-      tl.to([logoEl, headerEl, globalHeader, playerEl, buttons, navRef.current, ...Array.from(navItems)], {
+      tl.to([logoEl, headerEl, globalHeader, buttons, navRef.current, ...Array.from(navItems)], {
         autoAlpha: 1,
         duration: 0.6,
         stagger: 0.08,
@@ -362,8 +331,6 @@ const Home = () => {
         isOpen={isSendDemosOpen}
         onClose={() => setIsSendDemosOpen(false)}
       />
-
-      <MusicPlayer ref={playerRef} tracks={tracks} />
 
     </section>
   );

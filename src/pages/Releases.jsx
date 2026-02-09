@@ -3,6 +3,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from '../sanity/client';
 import FlickeringTitle from '../components/FlickeringTitle';
+import { usePlayer } from "../context/PlayerContext";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -12,6 +14,7 @@ const Releases = () => {
   const cardsRef = useRef([]);
 
   const [releases, setReleases] = useState([]);
+  const { playTrack, currentTrack, isPlaying, togglePlay } = usePlayer();
 
   useEffect(() => {
     client
@@ -22,6 +25,7 @@ const Releases = () => {
           bandcamp,
           releaseDate,
           cover,
+          "audioUrl": audioPreview.asset->url,
           artist->{
             name
           }
@@ -54,6 +58,27 @@ const Releases = () => {
 
     return () => ctx.revert();
   }, [releases]);
+
+  const handlePlayClick = (e, release) => {
+    e.preventDefault(); // Prevent link navigation
+    e.stopPropagation();
+
+    if (!release.audioUrl) {
+      console.warn("No audio preview available for this release");
+      return;
+    }
+
+    playTrack({
+      title: release.title,
+      artist: release.artist?.name,
+      src: release.audioUrl,
+      cover: release.cover // Optional: if we want to show cover in player later
+    });
+  };
+
+  const isCurrentTrack = (release) => {
+    return currentTrack && currentTrack.src === release.audioUrl;
+  };
 
   return (
     <section ref={sectionRef} id="releases" className="mt-40 px-6 md:px-14  min-h-screen relative overflow-hidden">
@@ -97,44 +122,72 @@ const Releases = () => {
         </p>
       </div>
 
-      <div className="relative z-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto">
-        {releases.map((r, i) => (
-          <a
-            key={r._id}
-            ref={(el) => (cardsRef.current[i] = el)}
-            href={r.bandcamp}
-            target="_blank"
-            rel="noreferrer"
-            className="group flex flex-col cursor-pointer"
-          >
-            {/* Image Card (Styled like Home Nav) */}
-            <div className="relative w-40 md:w-full aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur border-r-2 border-b-2 border-white/20 overflow-hidden transition-all duration-500 group-hover:bg-white/[0.07] group-hover:border-white/60 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] rounded-2xl">
-              {/* Liquid Reflection Overlay */}
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      <div className="relative z-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 max-w-7xl mx-auto pb-32"> {/* Added padding bottom for player space */}
+        {releases.map((r, i) => {
+          const isPlayingThis = isCurrentTrack(r) && isPlaying;
 
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
-              <img
-                src={urlFor(r.cover).width(600).url()}
-                alt={r.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 relative z-0"
-              />
-              {/* Technical Dot */}
-              <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
+          return (
+            <div
+              key={r._id}
+              ref={(el) => (cardsRef.current[i] = el)}
+              className="group flex flex-col relative"
+            >
+              {/* Image Card (Styled like Home Nav) */}
+              {/* Wrapper for hover effect on the whole card, but click action specific */}
+              <div className="relative">
+                <a
+                  href={r.bandcamp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block relative w-full aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur border-r-2 border-b-2 border-white/20 overflow-hidden transition-all duration-500 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] rounded-2xl group-card"
+                >
+                  {/* Liquid Reflection Overlay */}
+                  <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+                  <img
+                    src={urlFor(r.cover).width(600).url()}
+                    alt={r.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 relative z-0"
+                  />
+                  {/* Technical Dot */}
+                  <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
+                </a>
+
+                {/* PLAY BUTTON OVERLAY */}
+                {r.audioUrl && (
+                  <button
+                    onClick={(e) => handlePlayClick(e, r)}
+                    className={`absolute bottom-4 right-4 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30 transition-all duration-300
+                            ${isPlayingThis
+                        ? "bg-purple-600 text-white opacity-100 scale-100 shadow-[0_0_15px_rgba(168,85,247,0.6)]"
+                        : "bg-black/40 text-white opacity-100 hover:bg-purple-500/80 hover:scale-110 shadow-lg"
+                      }
+                        `}
+                  >
+                    {isPlayingThis ? <FaPause size={14} /> : <FaPlay size={14} className="ml-1" />}
+                  </button>
+                )}
+              </div>
+
+              {/* Content Below */}
+              <a
+                href={r.bandcamp}
+                target="_blank"
+                rel="noreferrer"
+                className="flex bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded md:p-4 p-2 backdrop-blur-md flex-col hover:bg-white/5 transition-colors"
+              >
+                <h3 className="text-xs font-sans-custom font-bold tracking-widest text-zinc-100 group-hover:text-pink-200 transition-colors uppercase leading-tight">
+                  {r.title}
+                </h3>
+
+                <p className="text-sm bebas mt-1 text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider ">
+                  {r.artist?.name}
+                </p>
+              </a>
             </div>
-
-            {/* Content Below */}
-            <div className="flex  bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded md:p-4 p-2 backdrop-blur-md flex-col">
-              <h3 className="text-xs font-sans-custom font-bold tracking-widest text-zinc-100 group-hover:text-pink-200 transition-colors uppercase  leading-tight">
-                {r.title}
-              </h3>
-
-
-              <p className="text-sm bebas mt-1 text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider ">
-                {r.artist?.name}
-              </p>
-            </div>
-          </a>
-        ))}
+          )
+        })}
       </div>
     </section >
   );
