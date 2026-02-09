@@ -13,7 +13,7 @@ export default function Contact() {
                     For demos, booking requests, or general inquiries, please reach out to us.
                 </p>
                 <a href="mailto:info@moonkatrecords.com" className="boton-elegante inline-block">
-                    mooncatrecords@gmail.com
+                    info@moonkatrecords.com
                 </a>
             </div>
         </section>
