@@ -44,8 +44,13 @@ export const PlayerProvider = ({ children }) => {
 
         if (currentTrack) {
             // Only update src if changed, to prevent reload on toggle
-            if (audio.src !== currentTrack.src) {
-                audio.src = currentTrack.src;
+            // Check against base URL without query params to avoid infinite reload loop if we appended timestamp
+            const currentSrc = audio.src.split('?')[0];
+            const newSrc = currentTrack.src.split('?')[0];
+
+            if (currentSrc !== newSrc) {
+                // FORCE FRESH FETCH with CORS headers by appending timestamp
+                audio.src = `${currentTrack.src}?t=${Date.now()}`;
                 audio.load();
             }
 

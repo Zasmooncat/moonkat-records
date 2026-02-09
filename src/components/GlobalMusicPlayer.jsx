@@ -2,48 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "../context/PlayerContext";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { gsap } from "gsap";
-import WaveSurfer from 'wavesurfer.js';
 
 const GlobalMusicPlayer = () => {
-    const { currentTrack, isPlaying, togglePlay: togglePlayContext, audioRef } = usePlayer();
+    const { currentTrack, isPlaying, togglePlay, audioRef } = usePlayer();
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const containerRef = useRef(null);
-    const waveformRef = useRef(null);
-    const wavesurferRef = useRef(null);
-    // Custom togglePlay with AC resume
-    const togglePlay = () => {
-        // Ensure AudioContext is resumed on user interaction
-        if (wavesurferRef.current) {
-            try {
-                const ac = wavesurferRef.current.backend?.ac || (wavesurferRef.current).ac;
-                if (ac && ac.state === 'suspended') {
-                    ac.resume();
-                }
-            } catch (e) {
-                // Ignore errors
-            }
-        }
-        togglePlayContext();
-    };
+    const canvasRef = useRef(null);
+    const waveformDataRef = useRef([]);
 
     // Calculate progress for CSS fallback
     const validDuration = (Number.isFinite(duration) && duration > 0) ? duration : 0;
     const progressPercent = validDuration > 0 ? (currentTime / validDuration) * 100 : 0;
-
-    // Debug Logs
-    useEffect(() => {
-        console.log("Player Debug:", {
-            isPlaying,
-            currentTime,
-            duration,
-            validDuration,
-            progressPercent,
-            hasAudioRef: !!audioRef.current,
-            audioSrc: audioRef.current?.src,
-            wsReady: !!wavesurferRef.current
-        });
-    }, [currentTime, duration, isPlaying]);
 
     // Initial Hide
     useEffect(() => {
@@ -64,77 +34,103 @@ const GlobalMusicPlayer = () => {
         return () => ctx.revert();
     }, [currentTrack]);
 
-
-
-    // Slide Up/Down Animation
+    // Generate static waveform from audio file (ONCE per track)
     useEffect(() => {
-        if (!containerRef.current) return;
-        const ctx = gsap.context(() => {
-            if (currentTrack) {
-                gsap.to(containerRef.current, { y: "0%", duration: 0.5, ease: "power3.out" });
-            } else {
-                gsap.to(containerRef.current, { y: "100%", duration: 0.5, ease: "power3.in" });
-            }
-        }, containerRef);
-        return () => ctx.revert();
-    }, [currentTrack]);
+        if (!currentTrack) return;
 
-    // Initialize WaveSurfer
-    useEffect(() => {
-        if (!waveformRef.current || !audioRef.current) return;
+        const generateWaveform = async () => {
+            try {
+                console.log("Generating waveform for:", currentTrack.src);
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const response = await fetch(currentTrack.src);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-        // Destroy previous instance
-        if (wavesurferRef.current) {
-            wavesurferRef.current.destroy();
-        }
+                // Extract amplitude data from first channel
+                const rawData = audioBuffer.getChannelData(0);
+                const samples = 200; // Number of bars (increased for thinner bars)
+                const blockSize = Math.floor(rawData.length / samples);
 
-        wavesurferRef.current = WaveSurfer.create({
-            container: waveformRef.current,
-            waveColor: '#e4e4e7', // zinc-200
-            progressColor: '#ec4899', // pink-500
-            cursorColor: 'transparent',
-            barWidth: 2,
-            barGap: 3,
-            responsive: true,
-            height: 40,
-            normalize: true,
-            // Use the shared audio element to stay in sync with Context
-            media: audioRef.current,
-        });
+                const amplitudeData = [];
+                for (let i = 0; i < samples; i++) {
+                    let sum = 0;
+                    for (let j = 0; j < blockSize; j++) {
+                        sum += Math.abs(rawData[i * blockSize + j]);
+                    }
+                    amplitudeData.push(sum / blockSize);
+                }
 
-        // Immediately load the current track if available (fix for re-mounts/HMR)
-        if (currentTrack) {
-            wavesurferRef.current.load(currentTrack.src);
-        }
+                // Normalize to 0-1 range
+                const max = Math.max(...amplitudeData);
+                waveformDataRef.current = amplitudeData.map(val => val / max);
 
-        const ws = wavesurferRef.current;
-
-        // Sync volume to 0? No, we use media so we hear what audio plays.
-        // But we don't want WaveSurfer to control volume separately if it's just visualizing.
-        // With 'media', volume is controlled by the audio element.
-
-        ws.on('ready', () => {
-            setDuration(ws.getDuration());
-        });
-
-        // We don't need manual timeupdate sync as 'media' handles it.
-        // We DO need to update our React `currentTime` state for the Numbers.
-        const updateTime = () => setCurrentTime(audioRef.current.currentTime);
-        const updateDuration = () => setDuration(audioRef.current.duration || 0);
-
-        // We can listen to the AUDIO element for these updates, or WaveSurfer events.
-        // Listening to Audio element is safer as it's the source of truth.
-        // (We already do this in the OTHER useEffect, so we don't need to do it here!)
-
-        return () => {
-            if (wavesurferRef.current) {
-                wavesurferRef.current.destroy();
-                wavesurferRef.current = null;
+                console.log("Waveform generated successfully");
+            } catch (error) {
+                console.error("Waveform generation error:", error);
+                // Create placeholder waveform on error
+                waveformDataRef.current = Array(100).fill(0).map(() => Math.random() * 0.5 + 0.2);
             }
         };
-    }, [audioRef]);
 
-    // Sync Audio Events ONLY for Time Display (State)
+        generateWaveform();
+    }, [currentTrack]); // Only regenerate when track changes
+
+    // Draw waveform (updates on progress change)
+    useEffect(() => {
+        if (!canvasRef.current || waveformDataRef.current.length === 0) return;
+
+        const canvas = canvasRef.current;
+        const canvasCtx = canvas.getContext('2d');
+
+        // Set canvas size
+        const resizeCanvas = () => {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            canvasCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        };
+        resizeCanvas();
+
+        const drawWaveform = () => {
+            const rect = canvas.getBoundingClientRect();
+            const WIDTH = rect.width;
+            const HEIGHT = rect.height;
+
+            canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+            const numBars = waveformDataRef.current.length;
+            const barWidth = WIDTH / numBars;
+            const barGap = 0.5; // Reduced gap for thinner appearance
+            const actualBarWidth = barWidth - barGap;
+
+            for (let i = 0; i < numBars; i++) {
+                const barHeight = waveformDataRef.current[i] * HEIGHT * 0.8;
+                const x = i * barWidth;
+                const y = (HEIGHT - barHeight) / 2;
+
+                // Determine color based on progress
+                const progressX = (currentTime / validDuration) * WIDTH;
+                const barColor = x < progressX ? '#ec4899' : '#e4e4e7';
+
+                canvasCtx.fillStyle = barColor;
+                canvasCtx.fillRect(x, y, actualBarWidth, barHeight);
+            }
+        };
+
+        drawWaveform();
+
+        let resizeHandler = () => {
+            resizeCanvas();
+            drawWaveform();
+        };
+        window.addEventListener('resize', resizeHandler);
+
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
+        };
+    }, [currentTime, validDuration]); // Only redraw on progress change
+
+    // Sync Audio Events for Time Display
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -145,7 +141,7 @@ const GlobalMusicPlayer = () => {
         audio.addEventListener("timeupdate", updateTime);
         audio.addEventListener("loadedmetadata", updateDuration);
 
-        // Initialize state immediately in case audio is already loaded
+        // Initialize state immediately
         if (audio.duration) {
             setDuration(audio.duration);
             setCurrentTime(audio.currentTime);
@@ -157,25 +153,6 @@ const GlobalMusicPlayer = () => {
         };
     }, [audioRef]);
 
-    // Load track (Logic handled by Context setting audio.src?)
-    // Context sets audio.src. WaveSurfer with `media` option *should* pick it up.
-    // BUT we usually need to call load() if we want it to fetch peaks immediately?
-    // Actually, with `media`, we don't strictly need load() for playback, 
-    // but for waveform generation, it needs to analyze the file.
-    // If we call currentTrack.src, it might re-fetch.
-    // Let's try calling it to be sure.
-    useEffect(() => {
-        if (currentTrack && wavesurferRef.current) {
-            // Check if src is already set to avoid double load?
-            // wavesurferRef.current.load(currentTrack.src);
-            // Actually, if audio.src is set by Context, we might just need to tell WS?
-            // WaveSurfer V7 with media usually auto-detects src changes?
-            // Let's manually load to be safe for visualization.
-            wavesurferRef.current.load(currentTrack.src);
-        }
-    }, [currentTrack]);
-
-
     if (!currentTrack) return null;
 
     return (
@@ -184,10 +161,6 @@ const GlobalMusicPlayer = () => {
             className="fixed bottom-0 left-0 w-full z-[100] bg-black/95 backdrop-blur-xl border-t border-white/10 flex flex-col justify-center h-auto min-h-[120px] md:h-24 py-4 md:py-0 transition-all duration-300"
         >
             <div className="flex flex-col md:flex-row items-center justify-between px-6 md:px-14 h-full relative gap-4 md:gap-4">
-
-                {/* Waveform Background Container */}
-                <div className="absolute inset-0 z-0 opacity-30 pointer-events-none md:pointer-events-auto">
-                </div>
 
                 {/* Top Row (Mobile): Controls + Info + Timer */}
                 <div className="w-full flex items-center justify-between md:w-auto md:justify-start gap-4 z-10 shrink-0">
@@ -212,23 +185,24 @@ const GlobalMusicPlayer = () => {
                         </div>
                     </div>
 
-                    {/* Mobile Timer (Right aligned in top row) */}
+                    {/* Mobile Timer */}
                     <div className="md:hidden text-xs font-mono text-zinc-500 tabular-nums">
                         {formatTime(currentTime)} / {formatTime(duration)}
                     </div>
                 </div>
 
-                {/* Bottom Row (Mobile) / Right Col (Desktop): Waveform & CSS Progress Fallback */}
-                {/* Fixed height h-10 to match WaveSurfer config (40px) */}
-                <div className="w-full md:flex-1 h-10 relative group z-10 min-h-[40px] rounded-md overflow-hidden bg-white/5" >
-                    {/* CSS Progress Bar (Fallback/Underlay) */}
-                    <div
-                        className="absolute top-0 left-0 h-full bg-pink-500/20 pointer-events-none transition-all duration-100 ease-linear"
-                        style={{ width: `${progressPercent}%` }}
+                {/* Waveform Canvas */}
+                <div className="w-full md:flex-1 h-10 relative group z-10 min-h-[40px] rounded-md overflow-hidden bg-black/20">
+                    <canvas
+                        ref={canvasRef}
+                        className="w-full h-full cursor-pointer"
+                        onClick={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const percent = x / rect.width;
+                            audioRef.current.currentTime = percent * duration;
+                        }}
                     />
-
-                    {/* WaveSurfer Container */}
-                    <div ref={waveformRef} className="w-full h-full cursor-pointer relative z-20" />
                 </div>
 
                 {/* Desktop Timer */}
