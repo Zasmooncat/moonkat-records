@@ -160,8 +160,8 @@ const Releases = () => {
                     onClick={(e) => handlePlayClick(e, r)}
                     className={`absolute bottom-4 right-4 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30 transition-all duration-300
                             ${isPlayingThis
-                        ? "bg-purple-600 text-white opacity-100 scale-100 shadow-[0_0_15px_rgba(168,85,247,0.6)]"
-                        : "bg-black/40 text-white opacity-100 hover:bg-purple-500/80 hover:scale-110 shadow-lg"
+                        ? "bg-pink-600 text-white opacity-100 scale-100 shadow-[0_0_15px_rgba(236,72,153,0.6)]"
+                        : "bg-black/40 text-white opacity-100 hover:bg-pink-500/80 hover:scale-110 shadow-lg"
                       }
                         `}
                   >

@@ -10,10 +10,10 @@ export const usePlayer = () => {
 export const PlayerProvider = ({ children }) => {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const audioRef = useRef(new Audio());
-
-    // Ensure CORS is allowed for WaveSurfer analysis
-    if (!audioRef.current.crossOrigin) {
+    // Initialize Audio with CORS enabled immediately
+    const audioRef = useRef(null);
+    if (!audioRef.current) {
+        audioRef.current = new Audio();
         audioRef.current.crossOrigin = "anonymous";
     }
 
