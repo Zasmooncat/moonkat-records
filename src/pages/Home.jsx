@@ -107,7 +107,7 @@ const Home = () => {
     });
 
     return () => ctx.revert();
-  }, [videoReady]);
+  }, [videoReady, fontsReady]); // Fixed: include fontsReady
 
   // Fallback: Start animation even if video fails to load after 2 seconds
   useEffect(() => {
@@ -164,6 +164,10 @@ const Home = () => {
         muted
         playsInline
         onLoadedData={() => setVideoReady(true)}
+        onError={() => {
+          console.warn("Video failed to load, proceeding with animations");
+          setVideoReady(true);
+        }}
       ></video>
 
       {/* ===== DARK OVERLAY ===== */}
