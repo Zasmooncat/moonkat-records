@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import Promo from "./pages/Promo";
 import Unsubscribe from "./pages/Unsubscribe";
 import SecretSender from "./pages/SecretSender";
+import GoogleTagManager from "./components/GoogleAnalytics";
 // ScrollToTop component to handle scroll on route change
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <Router>
+      <GoogleTagManager />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<MainContent />} />
