@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const GoogleTagManager = () => {
-    const gtmId = import.meta.env.VITE_GTM_ID;
+    const gtmId = "GTM-T2ZXSHK3"; // Hardcoded for debugging: import.meta.env.VITE_GTM_ID;
 
     useEffect(() => {
         // Only load GTM if ID is provided
