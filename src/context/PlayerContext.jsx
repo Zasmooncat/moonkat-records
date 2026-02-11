@@ -38,6 +38,12 @@ export const PlayerProvider = ({ children }) => {
         setIsPlaying(prev => !prev);
     };
 
+    // Stop and close player
+    const closePlayer = () => {
+        setIsPlaying(false);
+        setCurrentTrack(null);
+    };
+
     // Sync audio element with state
     useEffect(() => {
         const audio = audioRef.current;
@@ -90,6 +96,7 @@ export const PlayerProvider = ({ children }) => {
         playTrack,
         pauseTrack,
         togglePlay,
+        closePlayer,
         audioRef // Expose ref for progress bar component usage
     };
 

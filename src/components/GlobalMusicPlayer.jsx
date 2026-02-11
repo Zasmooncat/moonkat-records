@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "../context/PlayerContext";
-import { FaPlay, FaPause } from "react-icons/fa";
+import { FaPlay, FaPause, FaTimes } from "react-icons/fa";
 import { gsap } from "gsap";
 
 const GlobalMusicPlayer = () => {
-    const { currentTrack, isPlaying, togglePlay, audioRef } = usePlayer();
+    const { currentTrack, isPlaying, togglePlay, closePlayer, audioRef } = usePlayer();
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const containerRef = useRef(null);
@@ -161,6 +161,14 @@ const GlobalMusicPlayer = () => {
             className="fixed bottom-0 left-0 w-full z-[100] bg-black/95 backdrop-blur-xl border-t border-white/10 flex flex-col justify-center h-auto min-h-[120px] md:h-24 py-4 md:py-0 transition-all duration-300"
         >
             <div className="flex flex-col md:flex-row items-center justify-between px-6 md:px-14 h-full relative gap-4 md:gap-4">
+
+                {/* Close Button */}
+                <button
+                    onClick={closePlayer}
+                    className="absolute top-2 right-2 md:top-4 md:right-4 text-white/50 hover:text-white transition-colors z-50 p-1"
+                >
+                    <FaTimes size={16} />
+                </button>
 
                 {/* Top Row (Mobile): Controls + Info + Timer */}
                 <div className="w-full flex items-center justify-between md:w-auto md:justify-start gap-4 z-10 shrink-0">
