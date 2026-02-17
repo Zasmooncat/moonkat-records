@@ -183,8 +183,9 @@ serve(async (req) => {
         )
 
     } catch (error) {
+        console.error("Critical Error in send-promo-campaign:", error)
         return new Response(
-            JSON.stringify({ success: false, error: error.message }),
+            JSON.stringify({ success: false, error: error.message || "Internal Server Error" }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
     }
