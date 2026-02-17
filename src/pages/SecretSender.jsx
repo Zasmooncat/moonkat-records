@@ -233,7 +233,7 @@ const SecretSender = () => {
 
                             <div className="p-8 max-h-[500px] overflow-y-auto bg-black">
                                 <div className="max-w-sm mx-auto text-center">
-                                    <img src="/Isotipo.png" className="w-32 mx-auto mb-8" alt="Logo" />
+                                    <img src="https://moonkatrecords.com/moonkat-logo.png" className="w-32 mx-auto mb-8 invert filter grayscale contrast-200" alt="Logo" />
 
                                     {mode === 'release' ? (
                                         release ? (

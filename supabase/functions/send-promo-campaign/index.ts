@@ -135,7 +135,7 @@ serve(async (req) => {
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://moonkatrecords.com/Isotipo.png" alt="Moonkat Records" class="logo">
+            <img src="https://moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo">
           </div>
           <div class="content">
             ${personalGreeting}
