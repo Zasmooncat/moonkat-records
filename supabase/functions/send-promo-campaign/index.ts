@@ -37,10 +37,26 @@ serve(async (req) => {
         return new Response('ok', { headers: corsHeaders })
     }
 
+    // Only allow POST
+    if (req.method !== 'POST') {
+        return new Response("Method not allowed", { status: 405, headers: corsHeaders })
+    }
+
     try {
         const rawBody = await req.text();
         console.log("Raw Request Body:", rawBody);
-        const payload: CampaignPayload = JSON.parse(rawBody);
+
+        if (!rawBody) {
+            throw new Error("Request body is empty");
+        }
+
+        let payload: CampaignPayload = JSON.parse(rawBody);
+
+        // Handle potential double-wrapping by Supabase Invoke
+        if (payload.body) {
+            // @ts-ignore - dynamic unwrap
+            payload = payload.body;
+        }
 
         // 1. Security Check
         if (payload.adminKey !== ADMIN_SECRET_KEY) {
