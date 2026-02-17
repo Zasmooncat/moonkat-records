@@ -92,7 +92,13 @@ const SecretSender = () => {
                 body: bodyPayload
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error("Supabase Invoke Error:", error);
+                // If the function returned a custom error message in the body, it might be in error.context or we might need to parse it differently. 
+                // Often for 400s, data might still be present or error.message is generic.
+                const errorMessage = (data && data.error) || error.message || "Unknown error";
+                throw new Error(errorMessage);
+            }
 
             console.log("Function Response:", data);
             setLogs(prev => [...prev, `✅ SUCCESS! ${data.message}`]);
