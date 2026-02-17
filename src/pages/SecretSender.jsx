@@ -225,24 +225,24 @@ const SecretSender = () => {
 
                     {/* RIGHT: Preview & Logs */}
                     <div>
-                        <div className="bg-white text-black border border-zinc-700 rounded-xl overflow-hidden mb-6 shadow-2xl relative">
-                            <div className="bg-zinc-100 p-2 border-b text-xs text-zinc-500 flex justify-between">
+                        <div className="bg-black text-white border border-zinc-700 rounded-xl overflow-hidden mb-6 shadow-2xl relative">
+                            <div className="bg-zinc-900 p-2 border-b border-zinc-800 text-xs text-zinc-500 flex justify-between">
                                 <span>Email Preview</span>
                                 <span>To: subscriber@email.com</span>
                             </div>
 
-                            <div className="p-8 max-h-[500px] overflow-y-auto">
+                            <div className="p-8 max-h-[500px] overflow-y-auto bg-black">
                                 <div className="max-w-sm mx-auto text-center">
-                                    <img src="/Isotipo.png" className="w-32 mx-auto mb-8 invert filter grayscale contrast-200" alt="Logo" />
+                                    <img src="/Isotipo.png" className="w-32 mx-auto mb-8" alt="Logo" />
 
                                     {mode === 'release' ? (
                                         release ? (
                                             <>
                                                 <img src={urlFor(release.cover).width(400).url()} className="w-full rounded shadow-xl mb-6" />
-                                                <h1 className="text-2xl font-bold uppercase tracking-widest mb-2">{release.title}</h1>
+                                                <h1 className="text-2xl font-bold uppercase tracking-widest mb-2 text-white">{release.title}</h1>
                                                 <h2 className="text-pink-600 text-lg mb-6">{release.artistName}</h2>
-                                                <p className="text-sm text-zinc-600 leading-relaxed mb-6">Hey [Name],</p>
-                                                <p className="text-sm text-zinc-600 italic leading-relaxed mb-8 border-l-2 border-pink-200 pl-4 text-left">
+                                                <p className="text-sm text-zinc-400 leading-relaxed mb-6">Hey [Name],</p>
+                                                <p className="text-sm text-zinc-400 italic leading-relaxed mb-8 border-l-2 border-pink-800 pl-4 text-left">
                                                     {release.promoDescription || "No description found."}
                                                 </p>
                                                 <div className="bg-pink-600 text-white font-bold py-3 px-8 rounded uppercase text-sm inline-block">
@@ -250,19 +250,19 @@ const SecretSender = () => {
                                                 </div>
                                             </>
                                         ) : (
-                                            <div className="text-zinc-400 py-20 italic">Fetch a release to preview...</div>
+                                            <div className="text-zinc-600 py-20 italic">Fetch a release to preview...</div>
                                         )
                                     ) : (
                                         <>
                                             {imageUrl && <img src={imageUrl} className="w-full rounded shadow-xl mb-6" />}
-                                            <h1 className="text-xl font-bold mb-6 text-left">{subject || "Subject Line"}</h1>
-                                            <div className="text-left text-sm text-zinc-800 leading-relaxed whitespace-pre-wrap">
+                                            <h1 className="text-xl font-bold mb-6 text-left text-white">{subject || "Subject Line"}</h1>
+                                            <div className="text-left text-sm text-zinc-400 leading-relaxed whitespace-pre-wrap">
                                                 {content || "Your content will appear here..."}
                                             </div>
                                         </>
                                     )}
 
-                                    <div className="mt-12 pt-6 border-t border-zinc-200 text-xs text-zinc-400">
+                                    <div className="mt-12 pt-6 border-t border-zinc-800 text-xs text-zinc-500">
                                         You received this email because you are a Moonkat Records subscriber.<br />
                                         <span className="underline">Unsubscribe</span>
                                     </div>
