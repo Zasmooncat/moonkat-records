@@ -120,7 +120,7 @@ serve(async (req) => {
           body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
           .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
           .header { background: #000; padding: 20px; text-align: center; border-bottom: 1px solid #222; }
-          .logo { width: 150px; }
+          .logo { width: 150px; filter: invert(1); }
           .content { padding: 40px 20px; text-align: center; color: #ccc; }
           .cover { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; }
           h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
