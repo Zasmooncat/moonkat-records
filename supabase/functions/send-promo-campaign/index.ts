@@ -38,7 +38,9 @@ serve(async (req) => {
     }
 
     try {
-        const payload: CampaignPayload = await req.json()
+        const rawBody = await req.text();
+        console.log("Raw Request Body:", rawBody);
+        const payload: CampaignPayload = JSON.parse(rawBody);
 
         // 1. Security Check
         if (payload.adminKey !== ADMIN_SECRET_KEY) {

@@ -86,6 +86,7 @@ const SecretSender = () => {
 
         setSending(true);
         setLogs(prev => [...prev, `🚀 Starting ${mode.toUpperCase()} campaign...`]);
+        console.log("Sending Payload:", JSON.stringify(bodyPayload, null, 2));
 
         try {
             const { data, error } = await supabase.functions.invoke('send-promo-campaign', {
