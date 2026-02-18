@@ -119,83 +119,107 @@ serve(async (req) => {
 
         console.log(`Sending ${payload.type} campaign to ${subscribers.length} subscribers...`)
 
-        // 4. Send Emails via Resend
-        const emailPromises = subscribers.map(async (sub) => {
-            const unsubscribeLink = `https://moonkatrecords.com/unsubscribe?id=${sub.id}`
+        // 4. Send Emails via Resend (Batched)
+        const BATCH_SIZE = 5;
+        const DELAY_MS = 1000;
+        const emailResults = [];
 
-            // Personalize content
-            // We can replace [Name] placeholder if we want, or just prepend generic greeting
-            const personalGreeting = payload.type === 'release'
-                ? `<p>Hey ${sub.name},</p>`
-                : `<p>Hi ${sub.name},</p>`;
+        for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+            const batch = subscribers.slice(i, i + BATCH_SIZE);
 
-            const finalHtml = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
-          .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
-          .header { background: #000; padding: 20px; text-align: center; border-bottom: 1px solid #222; }
-          .logo { width: 150px; }
-          .content { padding: 40px 20px; text-align: center; color: #ccc; }
-          .cover { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; }
-          h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
-          h2 { color: #ec4899; font-weight: normal; margin-top: 0; margin-bottom: 30px; font-size: 18px; }
-          p { line-height: 1.6; margin-bottom: 20px; }
-          .btn { display: inline-block; background: #ec4899; color: white; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
-          .btn:hover { background: #db2777; }
-          .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #222; }
-          .link { color: #666; text-decoration: underline; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <img src="https://moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo">
-          </div>
-          <div class="content">
-            ${personalGreeting}
-            ${emailHtmlContent}
-          </div>
-          <div class="footer">
-            <p>You received this email because you are a Moonkat Records subscriber.</p>
-            <p><a href="${unsubscribeLink}" class="link">Unsubscribe</a></p>
-          </div>
-        </div>
-      </body>
-    </html>
-            `;
+            if (i > 0) await new Promise(resolve => setTimeout(resolve, DELAY_MS)); // Rate limit protection
 
-            try {
-                const res = await fetch('https://api.resend.com/emails', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${RESEND_API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        from: 'Moonkat Records <hello@moonkatrecords.com>',
-                        to: [sub.email],
-                        subject: emailSubject,
-                        html: finalHtml
+            const batchResults = await Promise.all(batch.map(async (sub) => {
+                const unsubscribeLink = `https://moonkatrecords.com/unsubscribe?id=${sub.id}`
+                const personalGreeting = payload.type === 'release'
+                    ? `<p>Hey ${sub.name},</p>`
+                    : `<p>Hi ${sub.name},</p>`;
+
+                const finalHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta charset="utf-8">
+                        <style>
+                          body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
+                          .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+                          .header { background: #000; padding: 20px; text-align: center; border-bottom: 1px solid #222; }
+                          .logo { width: 150px; }
+                          .content { padding: 40px 20px; text-align: center; color: #ccc; }
+                          .cover { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; }
+                          h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
+                          h2 { color: #ec4899; font-weight: normal; margin-top: 0; margin-bottom: 30px; font-size: 18px; }
+                          p { line-height: 1.6; margin-bottom: 20px; }
+                          .btn { display: inline-block; background: #ec4899; color: white; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
+                          .btn:hover { background: #db2777; }
+                          .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #222; }
+                          .link { color: #666; text-decoration: underline; }
+                        </style>
+                      </head>
+                      <body>
+                        <div class="container">
+                          <div class="header">
+                            <img src="https://moonkatrecords.com/moonkat-logo.png" alt="Moonkat Records" class="logo">
+                          </div>
+                          <div class="content">
+                            ${personalGreeting}
+                            ${emailHtmlContent}
+                          </div>
+                          <div class="footer">
+                            <p>You received this email because you are a Moonkat Records subscriber.</p>
+                            <p><a href="${unsubscribeLink}" class="link">Unsubscribe</a></p>
+                          </div>
+                        </div>
+                      </body>
+                    </html>
+                `;
+
+                try {
+                    const res = await fetch('https://api.resend.com/emails', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${RESEND_API_KEY}`,
+                        },
+                        body: JSON.stringify({
+                            from: 'Moonkat Records <hello@moonkatrecords.com>',
+                            to: [sub.email],
+                            subject: emailSubject,
+                            html: finalHtml
+                        })
                     })
-                })
-                return res.ok
-            } catch (e) {
-                console.error(`Failed to email ${sub.email}`, e)
-                return false
-            }
-        })
 
-        const results = await Promise.all(emailPromises)
-        const successCount = results.filter(Boolean).length
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        return { email: sub.email, success: false, error: errorData.message || res.statusText };
+                    }
+                    return { email: sub.email, success: true };
+
+                } catch (e) {
+                    console.error(`Failed to email ${sub.email}`, e)
+                    return { email: sub.email, success: false, error: e.message };
+                }
+            }));
+
+            emailResults.push(...batchResults);
+        }
+
+        const successCount = emailResults.filter(r => r.success).length;
+        const failures = emailResults.filter(r => !r.success);
+
+        // Check for Sandbox warning
+        const isSandboxIssue = failures.some(f => f.error && (f.error.toLowerCase().includes('sandbox') || f.error.toLowerCase().includes('verified')));
+        let successMessage = `Sent to ${successCount} of ${subscribers.length} subscribers`;
+
+        if (isSandboxIssue) {
+            successMessage += " (WARNING: Resend Sandbox Mode Detected - only verified emails allowe)";
+        }
 
         return new Response(
             JSON.stringify({
                 success: true,
-                message: `Sent to ${successCount} of ${subscribers.length} subscribers`
+                message: successMessage,
+                failures: failures.length > 0 ? failures : undefined
             }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )

@@ -102,8 +102,18 @@ const SecretSender = () => {
             }
 
             console.log("Function Response:", data);
-            setLogs(prev => [...prev, `✅ SUCCESS! ${data.message}`]);
-            setStatus('success');
+
+            if (data.failures && data.failures.length > 0) {
+                setLogs(prev => [...prev, `✅ success: ${data.message}`]);
+                setLogs(prev => [...prev, `⚠️ ${data.failures.length} FAILED:`]);
+                data.failures.forEach(f => {
+                    setLogs(prev => [...prev, `❌ ${f.email}: ${f.error}`]);
+                });
+                setStatus('success'); // Still success because some emails might have been sent
+            } else {
+                setLogs(prev => [...prev, `✅ SUCCESS! ${data.message}`]);
+                setStatus('success');
+            }
 
         } catch (err) {
             console.error(err);
