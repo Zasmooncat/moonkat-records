@@ -250,14 +250,14 @@ const Home = () => {
           </h1>
 
           <div ref={textRef} className="bebas opacity-0">
-            <p className="mt-8 max-w-lg text-zinc-300 leading-relaxed border-t border-white/20 pt-6">
+            <h2 className="mt-8 max-w-lg text-zinc-300 leading-relaxed border-t border-white/20 pt-6">
               {"Moonkat Records ® — Drum & Bass / Jungle music".split(" ").map((word, i, arr) => (
                 <span key={i}>
                   <span className="char inline-block">{word}</span>
                   {i < arr.length - 1 && " "}
                 </span>
               ))}
-            </p>
+            </h2>
             <p className="mt-4 max-w-lg text-pink-200 text-xl leading-relaxed">
               {"Hit subscribe to get promos".split(" ").map((word, i, arr) => (
                 <span key={i}>

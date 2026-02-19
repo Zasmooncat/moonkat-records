@@ -195,7 +195,12 @@ const Promo = () => {
                         {release.audioUrl && (
                             <div className="w-full bg-black/40 p-5 rounded-xl border border-white/5 mb-6">
                                 <p className="text-xs text-zinc-500 mb-3 uppercase tracking-widest font-bold">Preview Track</p>
-                                <audio controls className="w-full h-10 custom-audio focus:outline-none">
+                                <audio
+                                    controls
+                                    controlsList="nodownload"
+                                    onContextMenu={(e) => e.preventDefault()}
+                                    className="w-full h-10 custom-audio focus:outline-none"
+                                >
                                     <source src={release.audioUrl} type="audio/mpeg" />
                                     Your browser does not support the audio element.
                                 </audio>

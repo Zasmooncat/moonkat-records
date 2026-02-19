@@ -120,8 +120,10 @@ serve(async (req) => {
         console.log(`Sending ${payload.type} campaign to ${subscribers.length} subscribers...`)
 
         // 4. Send Emails via Resend (Batched)
-        const BATCH_SIZE = 5;
-        const DELAY_MS = 1000;
+        // Rate Limit: 2 requests per second.
+        // We set BATCH_SIZE to 1 and DELAY_MS to 600 to trigger ~1.6 requests/sec, safe under the limit.
+        const BATCH_SIZE = 1;
+        const DELAY_MS = 600;
         const emailResults = [];
 
         for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
