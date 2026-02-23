@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client, urlFor } from "../sanity/client";
 import FlickeringTitle from '../components/FlickeringTitle';
-import fondo from "../assets/images/fondo/textura_industrial.jpg";
+import fondo from "../assets/images/fondo/textura_industrial.webp";
 
 import ArtistModal from "../components/ArtistModal";
 

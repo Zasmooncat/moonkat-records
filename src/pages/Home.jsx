@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { fadeInUp, fadeInUpStagger, fadeInUpStaggerLoad } from "../components/animations/gsapAnimations";
 import { gsap } from "gsap";
 import { HiMenu, HiX } from "react-icons/hi";
-import fondo from "../assets/images/fondo/textura_industrial.jpg"
+import fondo from "../assets/images/fondo/textura_industrial.webp"
 import fondovideo from "../assets/video/amoeba3D.mp4"
 import logo from "../assets/images/logos/Isotipo2.png";
 import hoverVideoReleases from "../assets/video/glitchtd3.mp4";

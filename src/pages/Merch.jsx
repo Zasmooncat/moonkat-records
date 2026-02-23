@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import fondo from "../assets/images/fondo/textura_industrial.jpg";
+import fondo from "../assets/images/fondo/textura_industrial.webp";
 import FlickeringTitle from '../components/FlickeringTitle';
 
 // Images
-import camisetaLogo from "../assets/images/merch/camiseta_logo.png";
-import camisetaUndergroundBlack from "../assets/images/merch/camiseta_underground_black.png";
-import sudaderaLogo from "../assets/images/merch/sudadera_logo.png";
-import sudaderaUndergroundBlack from "../assets/images/merch/sudadera_underground_black.png";
-import sudaderaUndergroundGreen from "../assets/images/merch/sudadera_underground_green.png";
+import camisetaLogo from "../assets/images/merch/camiseta_logo.webp";
+import camisetaUndergroundBlack from "../assets/images/merch/camiseta_underground_black.webp";
+import sudaderaLogo from "../assets/images/merch/sudadera_logo.webp";
+import sudaderaUndergroundBlack from "../assets/images/merch/sudadera_underground_black.webp";
+import sudaderaUndergroundGreen from "../assets/images/merch/sudadera_underground_green.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
