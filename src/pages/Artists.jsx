@@ -88,7 +88,8 @@ const Artists = () => {
                 <img
                   src={urlFor(artist.image).width(600).url()}
                   alt={artist.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 relative z-0"
+                  className="w-full h-full object-cover saturate-
+                0 transition-transform duration-700 group-hover:scale-110 relative z-0"
                 />
                 {/* Technical Dot */}
                 <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>

@@ -258,7 +258,7 @@ const Home = () => {
                 </span>
               ))}
             </h2>
-            <p className="mt-4 max-w-lg text-pink-200 text-xl leading-relaxed">
+            <p className="mt-4 max-w-lg text-pink-200 text-2xl leading-relaxed">
               {"Hit subscribe to get promos".split(" ").map((word, i, arr) => (
                 <span key={i}>
                   <span className="char inline-block">{word}</span>
@@ -267,7 +267,7 @@ const Home = () => {
               ))}
             </p>
           </div>
-          <div ref={buttonsRef} className="mt-8 md:mt-10 flex gap-6 items-center font-sans-custom opacity-0">
+          <div ref={buttonsRef} className="mt-8 md:mt-6 flex gap-6 items-center font-sans-custom opacity-0">
             <button
               className="boton-elegante"
               onClick={() => setIsSubscribeOpen(true)}

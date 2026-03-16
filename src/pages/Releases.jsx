@@ -110,7 +110,7 @@ const Releases = () => {
       {/* GLOBAL BANDCAMP LINK */}
       <div className="relative z-10 max-w-7xl mx-auto mb-16 flex justify-center px-2">
         <p className="text-sm md:text-base text-zinc-400 font-mono tracking-[0.2em] uppercase opacity-60">
-          Stream & Download in{" "}
+          Download in{" "}
           <a
             href="https://moonkatrecords.bandcamp.com/"
             target="_blank"
