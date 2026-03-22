@@ -85,12 +85,17 @@ const Artists = () => {
                 <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10" />
-                <img
-                  src={urlFor(artist.image).width(600).url()}
-                  alt={artist.name}
-                  className="w-full h-full object-cover saturate-
-                0 transition-transform duration-700 group-hover:scale-110 relative z-0"
-                />
+                {artist.image ? (
+                  <img
+                    src={urlFor(artist.image).width(600).url()}
+                    alt={artist.name}
+                    className="w-full h-full object-cover saturate-0 transition-transform duration-700 group-hover:scale-110 relative z-0"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
+                    <span className="text-zinc-600 text-xs uppercase tracking-widest">No image</span>
+                  </div>
+                )}
                 {/* Technical Dot */}
                 <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
               </div>
