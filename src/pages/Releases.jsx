@@ -14,7 +14,7 @@ const Releases = () => {
   const cardsRef = useRef([]);
 
   const [releases, setReleases] = useState([]);
-  const { playTrack, currentTrack, isPlaying, togglePlay } = usePlayer();
+  const { playPlaylist, currentTrack, isPlaying, togglePlay } = usePlayer();
 
   useEffect(() => {
     client
@@ -26,6 +26,7 @@ const Releases = () => {
           releaseDate,
           cover,
           "audioUrl": audioPreview.asset->url,
+          "tracks": audioTracks[]{title, "url": file.asset->url},
           artist->{
             name
           }
@@ -63,21 +64,37 @@ const Releases = () => {
     e.preventDefault(); // Prevent link navigation
     e.stopPropagation();
 
-    if (!release.audioUrl) {
+    let playlist = [];
+
+    if (release.tracks && release.tracks.length > 0) {
+      playlist = release.tracks.map(t => ({
+        title: t.title,
+        artist: release.artist?.name,
+        src: t.url,
+        cover: release.cover
+      }));
+    } else if (release.audioUrl) {
+      playlist = [{
+        title: release.title,
+        artist: release.artist?.name,
+        src: release.audioUrl,
+        cover: release.cover
+      }];
+    }
+
+    if (playlist.length === 0) {
       console.warn("No audio preview available for this release");
       return;
     }
 
-    playTrack({
-      title: release.title,
-      artist: release.artist?.name,
-      src: release.audioUrl,
-      cover: release.cover // Optional: if we want to show cover in player later
-    });
+    playPlaylist(playlist, 0);
   };
 
   const isCurrentTrack = (release) => {
-    return currentTrack && currentTrack.src === release.audioUrl;
+    if (!currentTrack) return false;
+    if (release.audioUrl && currentTrack.src === release.audioUrl) return true;
+    if (release.tracks && release.tracks.some(t => t.url === currentTrack.src)) return true;
+    return false;
   };
 
   return (
@@ -161,7 +178,7 @@ const Releases = () => {
                 </a>
 
                 {/* PLAY BUTTON OVERLAY */}
-                {r.audioUrl && (
+                {(r.audioUrl || (r.tracks && r.tracks.length > 0)) && (
                   <button
                     onClick={(e) => handlePlayClick(e, r)}
                     className={`absolute bottom-4 right-4 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30 transition-all duration-300

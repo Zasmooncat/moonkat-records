@@ -11,12 +11,18 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+interface TrackData {
+    title: string
+    url?: string
+}
+
 interface ReleaseData {
     title: string
     artist: string
     coverUrl: string
     promoUrl: string
     description: string
+    tracks?: TrackData[]
 }
 
 interface NewsletterData {
@@ -71,11 +77,25 @@ serve(async (req) => {
             if (!payload.releaseData) throw new Error('Missing releaseData');
             const data = payload.releaseData;
             emailSubject = `New Release: ${data.title} by ${data.artist}`;
+            
+            let tracksHtml = '';
+            if (data.tracks && data.tracks.length > 0) {
+                tracksHtml = `
+                    <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; border: 1px solid rgba(255,255,255,0.1);">
+                        <h3 style="color: #ec4899; margin-top: 0; font-size: 16px;">Tracklist:</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0; color: #ccc;">
+                            ${data.tracks.map((t, i) => `<li style="margin-bottom: 8px; font-size: 14px;">🎧 ${i + 1}. ${t.title}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
             emailHtmlContent = `
                 <img src="${data.coverUrl}" alt="${data.title}" class="cover">
                 <h1>${data.title}</h1>
                 <h2>${data.artist}</h2>
                 <p>${data.description}</p>
+                ${tracksHtml}
                 <a href="${data.promoUrl}" class="btn">Get Promo</a>
                 <p style="margin-top: 30px; font-size: 12px; color: #666;">
                     Link expires in 5 minutes after opening.

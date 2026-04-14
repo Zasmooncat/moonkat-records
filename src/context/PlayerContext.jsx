@@ -10,6 +10,9 @@ export const usePlayer = () => {
 export const PlayerProvider = ({ children }) => {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [playlist, setPlaylist] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
     // Initialize Audio with CORS enabled immediately
     const audioRef = useRef(null);
     if (!audioRef.current) {
@@ -17,17 +20,45 @@ export const PlayerProvider = ({ children }) => {
         audioRef.current.crossOrigin = "anonymous";
     }
 
-    // Play a track: sets track and immediately plays
-    const playTrack = (track) => {
-        // If same track, toggle play
-        if (currentTrack && currentTrack.src === track.src) {
+    // Play a playlist
+    const playPlaylist = (tracks, startIndex = 0) => {
+        if (!tracks || tracks.length === 0) return;
+        
+        // If same track in same playlist, toggle play
+        if (currentTrack && tracks[startIndex] && currentTrack.src === tracks[startIndex].src) {
             togglePlay();
             return;
         }
 
-        // New track
-        setCurrentTrack(track);
+        setPlaylist(tracks);
+        setCurrentIndex(startIndex);
+        setCurrentTrack(tracks[startIndex]);
         setIsPlaying(true);
+    };
+
+    // Play a track (backward compatibility or single tracks)
+    const playTrack = (track) => {
+        playPlaylist([track], 0);
+    };
+
+    const nextTrack = () => {
+        if (playlist.length > 0 && currentIndex < playlist.length - 1) {
+            const nextIdx = currentIndex + 1;
+            setCurrentIndex(nextIdx);
+            setCurrentTrack(playlist[nextIdx]);
+            setIsPlaying(true);
+        } else {
+            setIsPlaying(false);
+        }
+    };
+
+    const prevTrack = () => {
+        if (playlist.length > 0 && currentIndex > 0) {
+            const prevIdx = currentIndex - 1;
+            setCurrentIndex(prevIdx);
+            setCurrentTrack(playlist[prevIdx]);
+            setIsPlaying(true);
+        }
     };
 
     const pauseTrack = () => {
@@ -42,6 +73,8 @@ export const PlayerProvider = ({ children }) => {
     const closePlayer = () => {
         setIsPlaying(false);
         setCurrentTrack(null);
+        setPlaylist([]);
+        setCurrentIndex(0);
     };
 
     // Sync audio element with state
@@ -75,7 +108,16 @@ export const PlayerProvider = ({ children }) => {
     useEffect(() => {
         const audio = audioRef.current;
 
-        const handleEnded = () => setIsPlaying(false);
+        const handleEnded = () => {
+            if (playlist && playlist.length > 0 && currentIndex < playlist.length - 1) {
+                const nextIdx = currentIndex + 1;
+                setCurrentIndex(nextIdx);
+                setCurrentTrack(playlist[nextIdx]);
+                setIsPlaying(true);
+            } else {
+                setIsPlaying(false);
+            }
+        };
         const handlePause = () => setIsPlaying(false);
         const handlePlay = () => setIsPlaying(true);
 
@@ -88,15 +130,20 @@ export const PlayerProvider = ({ children }) => {
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('play', handlePlay);
         };
-    }, []);
+    }, [playlist, currentIndex]);
 
     const value = {
         currentTrack,
         isPlaying,
+        playlist,
+        currentIndex,
+        playPlaylist,
         playTrack,
         pauseTrack,
         togglePlay,
         closePlayer,
+        nextTrack,
+        prevTrack,
         audioRef // Expose ref for progress bar component usage
     };
 

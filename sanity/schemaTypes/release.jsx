@@ -58,12 +58,28 @@ export default {
     },
     {
       name: 'audioPreview',
-      title: 'Audio Preview (MP3)',
+      title: 'Audio Preview (MP3) - LEGACY',
       type: 'file',
       options: {
         accept: 'audio/*'
       },
-      description: 'Upload the track preview for the promo page.',
+      description: 'Legacy upload. Use the tracks list below for new releases.',
+      hidden: ({ document }) => !document?.promoActive
+    },
+    {
+      name: 'audioTracks',
+      title: 'Audio Tracks (MP3)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Track Title', type: 'string', validation: Rule => Rule.required() },
+            { name: 'file', title: 'Audio File', type: 'file', options: { accept: 'audio/*' }, validation: Rule => Rule.required() }
+          ]
+        }
+      ],
+      description: 'Upload the tracks for the promo page. You can upload multiple for an EP.',
       hidden: ({ document }) => !document?.promoActive
     },
     {

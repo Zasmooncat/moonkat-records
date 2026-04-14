@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "../context/PlayerContext";
-import { FaPlay, FaPause, FaTimes } from "react-icons/fa";
+import { FaPlay, FaPause, FaTimes, FaStepForward, FaStepBackward } from "react-icons/fa";
 import { gsap } from "gsap";
 
 const GlobalMusicPlayer = () => {
-    const { currentTrack, isPlaying, togglePlay, closePlayer, audioRef } = usePlayer();
+    const { currentTrack, isPlaying, togglePlay, closePlayer, audioRef, playlist, currentIndex, nextTrack, prevTrack } = usePlayer();
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const containerRef = useRef(null);
@@ -173,13 +173,33 @@ const GlobalMusicPlayer = () => {
                 {/* Top Row (Mobile): Controls + Info + Timer */}
                 <div className="w-full flex items-center justify-between md:w-auto md:justify-start gap-4 z-10 shrink-0">
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        {playlist && playlist.length > 1 && (
+                            <button
+                                onClick={prevTrack}
+                                disabled={currentIndex === 0}
+                                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-white/70 hover:text-pink-400 disabled:opacity-30 disabled:hover:text-white/70 disabled:cursor-not-allowed transition-all"
+                            >
+                                <FaStepBackward size={12} />
+                            </button>
+                        )}
+
                         <button
                             onClick={togglePlay}
                             className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 hover:border-pink-400 hover:text-pink-400 text-white transition-all transform hover:scale-105 shrink-0"
                         >
                             {isPlaying ? <FaPause size={12} className="md:text-sm" /> : <FaPlay size={12} className="ml-1 md:text-sm" />}
                         </button>
+
+                        {playlist && playlist.length > 1 && (
+                            <button
+                                onClick={nextTrack}
+                                disabled={currentIndex === playlist.length - 1}
+                                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-white/70 hover:text-pink-400 disabled:opacity-30 disabled:hover:text-white/70 disabled:cursor-not-allowed transition-all"
+                            >
+                                <FaStepForward size={12} />
+                            </button>
+                        )}
 
                         <div className="flex flex-col overflow-hidden max-w-[200px] md:max-w-none">
                             <span className="text-[10px] md:text-sm text-zinc-400 font-mono tracking-widest uppercase mb-1">

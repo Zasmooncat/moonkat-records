@@ -76,6 +76,7 @@ const Promo = () => {
                     promoDescription,
                     downloadLink,
                     "audioUrl": audioPreview.asset->url,
+                    "tracks": audioTracks[]{title, "url": file.asset->url},
                     cover,
                     artist->{name}
                 }`;
@@ -192,7 +193,25 @@ const Promo = () => {
                         <h2 className="text-3xl font-bold text-white uppercase tracking-wider mb-2 leading-none">{release.title}</h2>
                         <h3 className="text-pink-400 text-xl font-bebas tracking-wide mb-8">{release.artist?.name}</h3>
 
-                        {release.audioUrl && (
+                        {release.tracks && release.tracks.length > 0 ? (
+                            <div className="w-full bg-black/40 p-5 rounded-xl border border-white/5 mb-6 space-y-4">
+                                <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold border-b border-zinc-800 pb-2">Preview Tracks</p>
+                                {release.tracks.map((t, i) => (
+                                    <div key={i}>
+                                        <p className="text-sm text-pink-300 font-bold mb-1">{i + 1}. {t.title}</p>
+                                        <audio
+                                            controls
+                                            controlsList="nodownload"
+                                            onContextMenu={(e) => e.preventDefault()}
+                                            className="w-full h-10 mb-2 custom-audio focus:outline-none"
+                                        >
+                                            <source src={t.url} type="audio/mpeg" />
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : release.audioUrl && (
                             <div className="w-full bg-black/40 p-5 rounded-xl border border-white/5 mb-6">
                                 <p className="text-xs text-zinc-500 mb-3 uppercase tracking-widest font-bold">Preview Track</p>
                                 <audio

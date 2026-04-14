@@ -28,11 +28,11 @@ const SecretSender = () => {
         setRelease(null);
 
         try {
-            const query = `*[_type == "release" && slug.current == $slug][0]{
                 title,
                 "artistName": artist->name,
                 cover,
-                promoDescription
+                promoDescription,
+                "tracks": audioTracks[]{title}
             }`;
             const result = await client.fetch(query, { slug });
 
@@ -68,7 +68,8 @@ const SecretSender = () => {
                 artist: release.artistName,
                 coverUrl: urlFor(release.cover).width(600).url(),
                 promoUrl: `https://moonkatrecords.com/promo/${slug}`,
-                description: release.promoDescription || "New release out now on Moonkat Records."
+                description: release.promoDescription || "New release out now on Moonkat Records.",
+                tracks: release.tracks
             };
         } else {
             if (!subject || !content) {
@@ -258,6 +259,18 @@ const SecretSender = () => {
                                                 <img src={urlFor(release.cover).width(400).url()} className="w-full rounded shadow-xl mb-6" />
                                                 <h1 className="text-2xl font-bold uppercase tracking-widest mb-2 text-white">{release.title}</h1>
                                                 <h2 className="text-pink-600 text-lg mb-6">{release.artistName}</h2>
+                                                
+                                                {release.tracks && release.tracks.length > 0 && (
+                                                    <div className="bg-white/5 p-4 rounded-lg mb-6 text-left border border-white/10">
+                                                        <h3 className="text-pink-500 font-bold text-sm mb-2 uppercase">Tracklist:</h3>
+                                                        <ul className="text-zinc-300 text-xs space-y-1">
+                                                            {release.tracks.map((t, i) => (
+                                                                <li key={i}>🎧 {i + 1}. {t.title}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
                                                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">Hey [Name],</p>
                                                 <p className="text-sm text-zinc-400 italic leading-relaxed mb-8 border-l-2 border-pink-800 pl-4 text-left">
                                                     {release.promoDescription || "No description found."}
