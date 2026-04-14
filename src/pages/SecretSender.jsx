@@ -28,6 +28,7 @@ const SecretSender = () => {
         setRelease(null);
 
         try {
+            const query = `*[_type == "release" && slug.current == $slug][0]{
                 title,
                 "artistName": artist->name,
                 cover,
