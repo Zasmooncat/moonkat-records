@@ -20,7 +20,7 @@ const Header = () => {
         {/* SOCIAL ICONS (Always Visible) */}
         <div className="flex gap-4 md:gap-6 text-zinc-400 pointer-events-auto mt-2">
           <a href="https://www.instagram.com/moonkat_records/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaInstagram size={18} /></a>
-          <a href="https://open.spotify.com/intl-es/artist/4TpaRMxJFAVHyLunW3UvwW" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaSpotify size={18} /></a>
+          <a href="https://open.spotify.com/playlist/46ZkLb1foBm833PojD7kIg?si=c0fcacf9f18b4773" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaSpotify size={18} /></a>
           <a href="https://music.apple.com/es/artist/mooncat/152398714" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaApple size={18} /></a>
           <a href="https://www.youtube.com/watch?v=IjWGeIfoeY0" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaYoutube size={18} /></a>
           <a href="https://moonkatrecords.bandcamp.com/music" target="_blank" rel="noreferrer" className="hover:text-white transition-colors"><FaBandcamp size={18} /></a>
