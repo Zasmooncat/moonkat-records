@@ -16,6 +16,7 @@ import SEO from "../components/SEO";
 
 const Home = () => {
   const logoRef = useRef(null);
+  const brandRef = useRef(null);
   const titleRef = useRef(null);
   const textRef = useRef(null);
   const buttonsRef = useRef(null);
@@ -43,6 +44,7 @@ const Home = () => {
     const navItems = navRef.current ? navRef.current.children : [];
     const logoEl = logoRef.current;
     const headerEl = headerRef.current;
+    const brandEl = brandRef.current;
 
     // Global Header (Layout component)
     const globalHeader = document.querySelector("header.fixed");
@@ -51,12 +53,35 @@ const Home = () => {
       const tl = gsap.timeline();
 
       // 1. Initial State: Hide all
-      gsap.set([logoEl, headerEl, globalHeader, titleRef.current, textRef.current, ...Array.from(titleRefWords), ...Array.from(textChars), buttons, ...Array.from(navItems)], {
+      const elementsToHide = [logoEl, headerEl, globalHeader, titleRef.current, textRef.current, ...Array.from(titleRefWords), ...Array.from(textChars), buttons, ...Array.from(navItems)];
+      if (brandEl) elementsToHide.push(brandEl);
+      gsap.set(elementsToHide, {
         autoAlpha: 0
       });
 
-      // 2. PHASE 1: Title Words Entrance (Word by Word)
-      tl.set(titleRef.current, { autoAlpha: 1 }); // Show container
+      // 2. PHASE 1: Brand Title and Main Title Words Entrance
+      if (brandEl) {
+        tl.set(brandEl, { autoAlpha: 1 });
+        tl.fromTo(brandEl,
+          {
+            autoAlpha: 0,
+            y: -30,
+            scale: 0.95
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: "back.out(1.7)",
+            onStart: () => {
+              brandEl.classList.add("animate-shine-once");
+            }
+          }
+        );
+      }
+
+      tl.set(titleRef.current, { autoAlpha: 1 }, brandEl ? "-=0.4" : undefined); // Show container
       tl.fromTo(titleRefWords,
         {
           autoAlpha: 0,
@@ -68,7 +93,8 @@ const Home = () => {
           duration: 0.15,
           stagger: 0.15,
           ease: "power2.inOut"
-        }
+        },
+        brandEl ? "-=0.3" : undefined
       );
 
       // 3. PHASE 2: Text Letter Flicker (Simultaneous Start)
@@ -139,10 +165,10 @@ const Home = () => {
   };
 
   const navLinks = [
-    { name: "RELEASES", id: "releases", video: hoverVideoReleases },
-    { name: "ARTISTS", id: "artists", video: hoverVideoArtists },
-    { name: "MERCH", id: "merch", video: hoverVideoMerch },
-    { name: "CONTACT", id: "contact", video: hoverVideoContact }
+    { num: "01", name: "RELEASES", id: "releases", video: hoverVideoReleases, tag: "CATALOG" },
+    { num: "02", name: "ARTISTS", id: "artists", video: hoverVideoArtists, tag: "ROSTER" },
+    { num: "03", name: "MERCH", id: "merch", video: hoverVideoMerch, tag: "SHOP" },
+    { num: "04", name: "CONTACT", id: "contact", video: hoverVideoContact, tag: "INFO" }
   ];
 
   return (
@@ -199,7 +225,7 @@ const Home = () => {
             <button
               key={link.name}
               onClick={() => scrollToSection(link.id)}
-              className="text-3xl titulo font-bold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
+              className="text-2xl font-panchang font-semibold text-white hover:text-pink-100 transition-colors tracking-widest uppercase"
             >
               {link.name}
             </button>
@@ -217,7 +243,7 @@ const Home = () => {
 
 
       {/* ================= MAIN GRID ================= */}
-      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-7xl pt-40 md:pt-0">
+      <div className="relative z-10 grid md:grid-cols-2 gap-10 md:gap-16 items-start w-full max-w-7xl pt-40 md:pt-0">
         {/* ===== LEFT COLUMN ===== */}
 
         <div className="flex flex-col justify-center">
@@ -227,9 +253,17 @@ const Home = () => {
             ref={logoRef}
             src={logo}
             alt="Moonkat Records Logo"
-            className="hidden md:block h-9 mb-10 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105 opacity-0"
+            className="hidden md:block h-9 mb-3 md:mb-4 drop-shadow-xl self-start cursor-pointer transition-transform hover:scale-105 opacity-0"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           />
+
+          {/* Web Name */}
+          <div
+            ref={brandRef}
+            className="brand-title-3d underline underline-offset-8 decoration-pink-100/50 decoration-1 text-md md:text-md font-black mb-3 md:mb-8 tracking-widest opacity-0 cursor-default select-none"
+          >
+            Moonkat Records
+          </div>
 
           <h1 ref={titleRef} className="titulo text-3xl uppercase md:text-6xl font-bold leading-tight tracking-wider opacity-0">
             <div className="flex flex-wrap gap-x-4">
@@ -289,41 +323,48 @@ const Home = () => {
 
 
         {/* ===== RIGHT COLUMN (NAVIGATION) ===== */}
-        <div ref={navRef} className="hidden md:grid grid-cols-2 gap-4 w-full max-w-lg ml-auto opacity-0">
-          {navLinks.map((item) => (
-            <div
-              key={item.name}
-              onClick={() => scrollToSection(item.id)}
-              className={`
-                 group relative aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur
-                   border-r-2 border-b-2 border-white/20
-                 flex flex-col justify-between p-7 cursor-pointer overflow-hidden transition-all duration-500
-                 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]
-                  rounded-2xl
-               `}
-            >
-              {/* Liquid Reflection Overlay */}
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        <div className="hidden md:flex flex-col w-full max-w-lg ml-auto md:mt-[48px]">
 
-              <video
-                src={item.video}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0 mix-blend-screen scale-110 group-hover:scale-100 transition-transform duration-1000"
-              />
+          {/* Minimalist Editorial Navigation */}
+          <div ref={navRef} className="flex flex-col border-t border-white/15 opacity-0">
+            {navLinks.map((item) => (
+              <div
+                key={item.name}
+                onClick={() => scrollToSection(item.id)}
+                className="group relative flex items-center justify-between py-5 px-4 border-b border-white/15 hover:border-pink-300/40 cursor-pointer overflow-hidden transition-all duration-500"
+              >
+                {/* Glitch Video on Hover */}
+                <video
+                  src={item.video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-65 transition-opacity duration-500 pointer-events-none z-0 mix-blend-screen scale-105 group-hover:scale-100 transition-transform duration-700"
+                />
 
-              <div className="relative z-10 flex flex-col h-full justify-end">
-                <h3 className=" font-zen text-pink-100 tracking-[0.2em] text-right group-hover:text-white transition-colors uppercase text-sm md:text-base leading-none">
+                {/* Ambient Soft Backdrop on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/20 to-black/80 opacity-0 group-hover:opacity-90 transition-opacity duration-300 pointer-events-none z-10" />
+
+                {/* Glowing Laser Border Accent on Hover */}
+                <div className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-gradient-to-r from-pink-400 via-pink-200 to-transparent group-hover:w-full transition-all duration-500 ease-out z-20" />
+
+                {/* Main Title (Panchang) */}
+                <h3 className="relative z-20 font-panchang font-semibold text-sm md:text-sm tracking-[0.2em] text-zinc-300 group-hover:text-white transition-all duration-300 uppercase leading-none transform group-hover:translate-x-2">
                   {item.name}
                 </h3>
-                {/* <div className="h-[1px] w-0 group-hover:w-12 bg-pink-400 mt-2 self-end transition-all duration-500 opacity-0 group-hover:opacity-100" /> */}
+
+                {/* Subtext */}
+                <span className="relative z-20 font-mono text-[11px] md:text-xs tracking-[0.25em] text-zinc-500 group-hover:text-pink-200 transition-colors duration-300 uppercase select-none">
+                  {item.tag}
+                </span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
         </div>
-      </div>
+
+      </div>{/* end main grid */}
 
       {/* ================= MODALS ================= */}
       <SubscribeModal

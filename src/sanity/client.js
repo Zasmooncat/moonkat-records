@@ -5,7 +5,7 @@ export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || "fgnqmgk1",
   dataset: import.meta.env.VITE_SANITY_DATASET || "production",
   apiVersion: "2024-10-01",
-  useCdn: true,
+  useCdn: false, // false = datos siempre frescos (sin caché CDN)
 });
 
 const builder = createImageUrlBuilder(client);

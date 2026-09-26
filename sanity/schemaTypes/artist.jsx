@@ -2,7 +2,22 @@ export default {
   name: 'artist',
   title: 'Artists',
   type: 'document',
+  // Sort list view in Studio by order field
+  orderings: [
+    {
+      title: 'Display Order',
+      name: 'orderAsc',
+      by: [{ field: 'order', direction: 'asc' }]
+    }
+  ],
   fields: [
+    {
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Lower number = appears first on the website. E.g. 1 = first, 2 = second…',
+      validation: Rule => Rule.integer().min(0),
+    },
     {
       name: 'name',
       title: 'Artist Name',
@@ -33,3 +48,4 @@ export default {
     }
   ]
 }
+

@@ -1,3 +1,5 @@
+@import url('https://api.fontshare.com/v2/css?f[]=panchang@200,300,400,500,600,700,800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,6 +18,10 @@ html, body {
 
 .bebas {
   font-family: 'Bebas Neue', sans-serif;
+}
+
+.font-panchang {
+  font-family: 'Panchang', sans-serif;
 }
 
 
@@ -112,3 +118,76 @@ transform: translateY(-1px);
   background-size: 200% 200%;
   animation: gradient-slow 8s ease infinite;
 }
+
+/* 3D brand name styling with shine reflection animation */
+.brand-title-3d {
+  font-family: 'Panchang', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  display: inline-block;
+  position: relative;
+  
+  /* Modern metallic shine background */
+  background: linear-gradient(
+    110deg,
+    #ffffff 30%,
+    #f472b6 48%,
+    #ffffff 50%,
+    #a855f7 52%,
+    #ffffff 70%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  
+  /* 3D Extrusion using layered drop shadows (neutral gray/dark tones) */
+  filter: drop-shadow(1px 1px 0px #4b5563)
+          drop-shadow(2px 2px 0px #1f2937)
+          drop-shadow(3px 3px 0px #111827)
+          drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.9));
+
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.brand-title-3d:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(1px 1px 0px #6b7280)
+          drop-shadow(2px 2px 0px #374151)
+          drop-shadow(3px 3px 0px #1f2937)
+          drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.4))
+          drop-shadow(8px 8px 16px rgba(0, 0, 0, 0.9));
+}
+
+@keyframes shine-glow {
+  0% {
+    background-position: 150% center;
+  }
+  100% {
+    background-position: -150% center;
+  }
+}
+
+.animate-shine-once {
+  animation: shine-glow 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* ===== Release Banner Animations ===== */
+@keyframes bannerKenBurns {
+  0%   { transform: scale(1.08) translateX(0px); }
+  100% { transform: scale(1.15) translateX(-18px); }
+}
+
+@keyframes bannerFadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes bannerFadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+

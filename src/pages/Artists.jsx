@@ -19,8 +19,16 @@ const Artists = () => {
   // Fetch Sanity artists
   useEffect(() => {
     client
-      .fetch(`*[_type == "artist"]{_id, name, bio, links, image, location}`)
-      .then(setArtists)
+      .fetch(`*[_type == "artist"] | order(order asc, name asc){_id, name, bio, links, image, location, order}`)
+      .then((data) => {
+        const sorted = [...(data || [])].sort((a, b) => {
+          const orderA = typeof a.order === "number" ? a.order : 9999;
+          const orderB = typeof b.order === "number" ? b.order : 9999;
+          if (orderA !== orderB) return orderA - orderB;
+          return (a.name || "").localeCompare(b.name || "");
+        });
+        setArtists(sorted);
+      })
       .catch(console.error);
   }, []);
 
