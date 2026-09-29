@@ -323,7 +323,7 @@ const Home = () => {
 
 
         {/* ===== RIGHT COLUMN (NAVIGATION) ===== */}
-        <div className="hidden md:flex flex-col w-full max-w-lg ml-auto md:mt-[48px]">
+        <div className="hidden md:flex flex-col w-full pt-10 max-w-lg ml-auto md:mt-[48px]">
 
           {/* Minimalist Editorial Navigation */}
           <div ref={navRef} className="flex flex-col border-t border-white/15 opacity-0">
@@ -334,17 +334,17 @@ const Home = () => {
                 className="group relative flex items-center justify-between py-5 px-4 border-b border-white/15 hover:border-pink-300/40 cursor-pointer overflow-hidden transition-all duration-500"
               >
                 {/* Glitch Video on Hover */}
-                <video
+                {/* <video
                   src={item.video}
                   autoPlay
                   loop
                   muted
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-65 transition-opacity duration-500 pointer-events-none z-0 mix-blend-screen scale-105 group-hover:scale-100 transition-transform duration-700"
-                />
+                /> */}
 
                 {/* Ambient Soft Backdrop on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/20 to-black/80 opacity-0 group-hover:opacity-90 transition-opacity duration-300 pointer-events-none z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-pink-400/20 to-black/80 opacity-0 group-hover:opacity-90 transition-opacity duration-300 pointer-events-none z-10" />
 
                 {/* Glowing Laser Border Accent on Hover */}
                 <div className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-gradient-to-r from-pink-400 via-pink-200 to-transparent group-hover:w-full transition-all duration-500 ease-out z-20" />
