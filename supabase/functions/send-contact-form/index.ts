@@ -47,7 +47,7 @@ serve(async (req) => {
     }
 
     // 2. FIELD VALIDATION
-    if (!name?.trim() || !email?.trim() || !message?.trim() || !inquiry_type) {
+    if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return new Response(
         JSON.stringify({ success: false, error: 'All fields are required.' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }

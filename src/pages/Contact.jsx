@@ -2,13 +2,6 @@ import React, { useState, useRef } from 'react';
 import FlickeringTitle from '../components/FlickeringTitle';
 import { HiCheckCircle, HiExclamationCircle } from 'react-icons/hi';
 
-const INQUIRY_TYPES = [
-  { value: 'demos',   label: 'Demos',   icon: '🎵', desc: 'Submit your tracks' },
-  { value: 'booking', label: 'Booking', icon: '🎤', desc: 'Live shows & events' },
-  { value: 'press',   label: 'Press',   icon: '📰', desc: 'Media & interviews' },
-  { value: 'general', label: 'General', icon: '💬', desc: 'Everything else' },
-];
-
 const MAX_CHARS = 2000;
 const MIN_CHARS = 10;
 
@@ -18,7 +11,6 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    inquiry_type: 'general',
     message: '',
   });
   const [honeypot, setHoneypot] = useState(''); // hidden field, must stay empty
@@ -81,7 +73,11 @@ export default function Contact() {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...formData, honeypot }),
+          body: JSON.stringify({
+            ...formData,
+            inquiry_type: 'general',
+            honeypot,
+          }),
         }
       );
 
@@ -90,7 +86,7 @@ export default function Contact() {
       if (data.success) {
         setSubmitStatus('success');
         setSubmitMessage("Message sent! We'll get back to you within 2–5 business days. Check your inbox for a confirmation.");
-        setFormData({ name: '', email: '', inquiry_type: 'general', message: '' });
+        setFormData({ name: '', email: '', message: '' });
         setErrors({});
       } else {
         setSubmitStatus('error');
@@ -148,38 +144,6 @@ export default function Contact() {
             noValidate
             className="flex flex-col gap-6"
           >
-            {/* ── Inquiry Type Selector ── */}
-            <div>
-              <label className="block text-xs font-bold tracking-[0.15em] uppercase text-zinc-400 mb-3">
-                Type of Inquiry
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {INQUIRY_TYPES.map((type) => {
-                  const active = formData.inquiry_type === type.value;
-                  return (
-                    <button
-                      key={type.value}
-                      type="button"
-                      onClick={() => handleChange('inquiry_type', type.value)}
-                      className={`
-                        flex flex-col items-center gap-1 py-3 px-2 rounded-lg border text-xs font-semibold tracking-wider uppercase transition-all duration-200
-                        ${active
-                          ? 'border-violet-500 bg-violet-500/10 text-violet-300 shadow-[0_0_16px_rgba(139,92,246,0.25)]'
-                          : 'border-white/10 bg-zinc-800/60 text-zinc-500 hover:border-white/25 hover:text-zinc-300'
-                        }
-                      `}
-                    >
-                      
-                      <span>{type.label}</span>
-                      <span className={`text-[10px] font-normal tracking-normal normal-case ${active ? 'text-violet-400' : 'text-zinc-600'}`}>
-                        {type.desc}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* ── Name & Email row ── */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
