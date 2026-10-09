@@ -292,7 +292,7 @@ const Home = () => {
                 </span>
               ))}
             </h2>
-            <p className="mt-4 max-w-lg text-pink-200 text-2xl leading-relaxed">
+            <p className="mt-4 max-w-lg text-pink-200 text-3xl leading-relaxed">
               {"Hit subscribe to get promos".split(" ").map((word, i, arr) => (
                 <span key={i}>
                   <span className="char inline-block">{word}</span>
