@@ -5,6 +5,7 @@ import { client, urlFor } from '../sanity/client';
 import FlickeringTitle from '../components/FlickeringTitle';
 import { usePlayer } from "../context/PlayerContext";
 import { FaPlay, FaPause } from "react-icons/fa";
+import ReleaseModal from "../components/ReleaseModal";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,6 +15,7 @@ const Releases = () => {
   const cardsRef = useRef([]);
 
   const [releases, setReleases] = useState([]);
+  const [selectedRelease, setSelectedRelease] = useState(null);
   const { playPlaylist, currentTrack, isPlaying, togglePlay } = usePlayer();
 
   useEffect(() => {
@@ -23,8 +25,12 @@ const Releases = () => {
           _id,
           title,
           bandcamp,
+          spotify,
+          appleMusic,
           releaseDate,
           cover,
+          description,
+          promoDescription,
           "audioUrl": audioPreview.asset->url,
           "tracks": audioTracks[]{title, "url": file.asset->url},
           artist->{
@@ -98,6 +104,7 @@ const Releases = () => {
   };
 
   return (
+    <>
     <section ref={sectionRef} id="releases" className="mt-40 px-6 md:px-14  min-h-screen relative overflow-hidden">
 
       {/* ===== BACKGROUND IMAGE ===== */}
@@ -149,14 +156,11 @@ const Releases = () => {
               ref={(el) => (cardsRef.current[i] = el)}
               className="group flex flex-col relative"
             >
-              {/* Image Card (Styled like Home Nav) */}
-              {/* Wrapper for hover effect on the whole card, but click action specific */}
+              {/* Image Card — click opens modal */}
               <div className="relative">
-                <a
-                  href={r.bandcamp}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block relative w-full aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur border-r-2 border-b-2 border-white/20 overflow-hidden transition-all duration-500 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] rounded-2xl group-card"
+                <button
+                  onClick={() => setSelectedRelease(r)}
+                  className="block w-full relative aspect-square bg-gradient-to-br from-white/10 via-transparent to-pink-300/20 backdrop-blur border-r-2 border-b-2 border-white/20 overflow-hidden transition-all duration-500 hover:bg-white/[0.07] hover:border-white/60 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] rounded-2xl cursor-pointer"
                 >
                   {/* Liquid Reflection Overlay */}
                   <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 via-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
@@ -175,7 +179,7 @@ const Releases = () => {
                   )}
                   {/* Technical Dot */}
                   <div className="absolute top-4 right-4 w-2 h-2 bg-zinc-600 rounded-full group-hover:bg-white transition-colors z-20"></div>
-                </a>
+                </button>
 
                 {/* PLAY BUTTON OVERLAY */}
                 {(r.audioUrl || (r.tracks && r.tracks.length > 0)) && (
@@ -193,12 +197,10 @@ const Releases = () => {
                 )}
               </div>
 
-              {/* Content Below */}
-              <a
-                href={r.bandcamp}
-                target="_blank"
-                rel="noreferrer"
-                className="flex bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded md:p-4 p-2 backdrop-blur-md flex-col hover:bg-white/5 transition-colors"
+              {/* Content Below — click opens modal */}
+              <button
+                onClick={() => setSelectedRelease(r)}
+                className="flex bg-gradient-to-br from-black/50 to-black/20 mt-2 rounded md:p-4 p-2 backdrop-blur-md flex-col hover:bg-white/5 transition-colors text-left w-full"
               >
                 <h3 className="text-xs font-sans-custom font-bold tracking-widest text-zinc-100 group-hover:text-pink-200 transition-colors uppercase leading-tight">
                   {r.title}
@@ -207,12 +209,21 @@ const Releases = () => {
                 <p className="text-sm bebas mt-1 text-zinc-400 group-hover:text-zinc-200 uppercase tracking-wider ">
                   {r.artist?.name}
                 </p>
-              </a>
+              </button>
             </div>
           )
         })}
       </div>
     </section >
+
+    {/* Release Modal */}
+    {selectedRelease && (
+      <ReleaseModal
+        release={selectedRelease}
+        onClose={() => setSelectedRelease(null)}
+      />
+    )}
+    </>
   );
 };
 

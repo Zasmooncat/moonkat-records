@@ -31,6 +31,22 @@ export default {
       title: 'Bandcamp Link',
       type: 'url'
     },
+    {
+      name: 'spotify',
+      title: 'Spotify Link',
+      type: 'url'
+    },
+    {
+      name: 'appleMusic',
+      title: 'Apple Music Link',
+      type: 'url'
+    },
+    {
+      name: 'description',
+      title: 'Public Description',
+      type: 'text',
+      description: 'Shown on the releases page modal (visible to everyone).'
+    },
     // PROMO PAGE FIELDS
     {
       name: 'slug',
