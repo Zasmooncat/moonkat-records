@@ -273,7 +273,7 @@ const SecretSender = () => {
                                                 )}
 
                                                 <p className="text-sm text-zinc-400 leading-relaxed mb-6">Hey [Name],</p>
-                                                <p className="text-sm text-zinc-400 italic leading-relaxed mb-8 border-l-2 border-pink-800 pl-4 text-left">
+                                                <p className="text-sm text-zinc-400 italic leading-relaxed mb-8 border-l-2 border-pink-800 pl-4 text-left whitespace-pre-wrap">
                                                     {release.promoDescription || "No description found."}
                                                 </p>
                                                 <div className="bg-pink-600 text-white font-bold py-3 px-8 rounded uppercase text-sm inline-block">

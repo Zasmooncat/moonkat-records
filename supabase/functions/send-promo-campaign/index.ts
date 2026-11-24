@@ -90,11 +90,13 @@ serve(async (req) => {
                 `;
             }
 
+            const formattedDescription = data.description.split('\n').join('<br>');
+
             emailHtmlContent = `
                 <img src="${data.coverUrl}" alt="${data.title}" class="cover">
                 <h1>${data.title}</h1>
                 <h2>${data.artist}</h2>
-                <p>${data.description}</p>
+                <p>${formattedDescription}</p>
                 ${tracksHtml}
                 <a href="${data.promoUrl}" class="btn">Get Promo</a>
                 <p style="margin-top: 30px; font-size: 12px; color: #666;">
