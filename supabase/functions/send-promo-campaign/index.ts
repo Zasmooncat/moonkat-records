@@ -161,39 +161,45 @@ serve(async (req) => {
 
                 const finalHtml = `
                     <!DOCTYPE html>
-                    <html>
+                    <html bgcolor="#000000">
                       <head>
                         <meta charset="utf-8">
+                        <meta name="color-scheme" content="dark">
+                        <meta name="supported-color-schemes" content="dark">
                         <style>
-                          body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
-                          .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
-                          .header { background: #000; padding: 20px; text-align: center; border-bottom: 1px solid #222; }
+                          :root { color-scheme: dark; }
+                          body { font-family: sans-serif; background-color: #000000 !important; background: #000000 !important; color: #ffffff; margin: 0; padding: 20px; }
+                          .container { max-width: 600px; margin: 0 auto; background-color: #111111 !important; background: #111111 !important; border-radius: 10px; overflow: hidden; border: 1px solid #333333; }
+                          .header { background-color: #000000 !important; background: #000000 !important; padding: 20px; text-align: center; border-bottom: 1px solid #222222; }
                           .logo { width: 150px; }
-                          .content { padding: 40px 20px; text-align: center; color: #ccc; }
+                          .content { padding: 40px 20px; text-align: center; color: #cccccc; background-color: #111111 !important; }
                           .cover { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; }
-                          h1 { color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
+                          h1 { color: #ffffff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
                           h2 { color: #ec4899; font-weight: normal; margin-top: 0; margin-bottom: 30px; font-size: 18px; }
-                          p { line-height: 1.6; margin-bottom: 20px; }
-                          .btn { display: inline-block; background: #ec4899; color: white; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
-                          .btn:hover { background: #db2777; }
-                          .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #222; }
-                          .link { color: #666; text-decoration: underline; }
+                          p { line-height: 1.6; margin-bottom: 20px; color: #cccccc; }
+                          .btn { display: inline-block; background-color: #ec4899 !important; background: #ec4899 !important; color: #ffffff !important; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
+                          .footer { padding: 20px; text-align: center; font-size: 12px; color: #666666; border-top: 1px solid #222222; background-color: #000000 !important; }
+                          .link { color: #666666; text-decoration: underline; }
                         </style>
                       </head>
-                      <body>
-                        <div class="container">
-                          <div class="header">
-                            <img src="https://moonkatrecords.com/moonkatrecords.png" alt="Moonkat Records" class="logo">
+                      <body bgcolor="#000000" style="background-color:#000000 !important; margin:0; padding:20px;">
+                        <table width="100%" bgcolor="#000000" cellpadding="0" cellspacing="0" style="background-color:#000000;">
+                          <tr><td align="center">
+                        <div class="container" style="max-width:600px; background-color:#111111; border-radius:10px; overflow:hidden; border:1px solid #333333;">
+                          <div class="header" style="background-color:#000000; padding:20px; text-align:center; border-bottom:1px solid #222222;">
+                            <img src="https://moonkatrecords.com/moonkatrecords.png" alt="Moonkat Records" class="logo" style="width:150px;">
                           </div>
-                          <div class="content">
+                          <div class="content" style="padding:40px 20px; text-align:center; color:#cccccc; background-color:#111111;">
                             ${personalGreeting}
                             ${emailHtmlContent}
                           </div>
-                          <div class="footer">
+                          <div class="footer" style="padding:20px; text-align:center; font-size:12px; color:#666666; border-top:1px solid #222222; background-color:#000000;">
                             <p>You received this email because you are a Moonkat Records subscriber.</p>
-                            <p><a href="${unsubscribeLink}" class="link">Unsubscribe</a></p>
+                            <p><a href="${unsubscribeLink}" class="link" style="color:#666666; text-decoration:underline;">Unsubscribe</a></p>
                           </div>
                         </div>
+                          </td></tr>
+                        </table>
                       </body>
                     </html>
                 `;
