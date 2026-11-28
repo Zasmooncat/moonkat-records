@@ -21,6 +21,31 @@ const ArtistModal = ({ artist, onClose }) => {
         );
     }, []);
 
+    // Close on Escape key
+    useEffect(() => {
+        const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [onClose]);
+
+    // Handle browser/mobile back button (popstate)
+    useEffect(() => {
+        window.history.pushState({ artistModalOpen: true }, "");
+
+        const handlePopState = () => {
+            onClose();
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+            if (window.history.state?.artistModalOpen) {
+                window.history.back();
+            }
+        };
+    }, [onClose]);
+
     const getSocialIcon = (url) => {
         if (!url) return <FaLink />;
         const lowerUrl = url.toLowerCase();
@@ -47,6 +72,15 @@ const ArtistModal = ({ artist, onClose }) => {
             className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
             onClick={onClose}
         >
+            {/* FLOATING CLOSE BUTTON — Always visible on screen */}
+            <button
+                onClick={onClose}
+                className="fixed top-4 right-4 z-[10000] w-10 h-10 rounded-full bg-black/80 border border-white/20 text-white hover:text-pink-400 hover:border-pink-500/50 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all active:scale-95 text-lg"
+                aria-label="Cerrar modal"
+            >
+                ✕
+            </button>
+
             <div
                 className="artist-modal relative bg-zinc-900 border border-white/10 text-white max-w-xl w-full mx-auto p-8 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
@@ -54,7 +88,8 @@ const ArtistModal = ({ artist, onClose }) => {
                 {/* CLOSE */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full z-50"
+                    className="absolute top-4 right-4 text-white hover:text-pink-400 transition-colors bg-black/70 border border-white/20 p-2.5 rounded-full z-50 shadow-lg active:scale-95"
+                    aria-label="Cerrar modal"
                 >
                     ✕
                 </button>
