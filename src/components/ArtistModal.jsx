@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { urlFor } from "../sanity/client";
 import {
@@ -13,6 +13,9 @@ import {
 } from "react-icons/fa6";
 
 const ArtistModal = ({ artist, onClose }) => {
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
+
     useEffect(() => {
         gsap.fromTo(
             ".artist-modal",
@@ -21,30 +24,28 @@ const ArtistModal = ({ artist, onClose }) => {
         );
     }, []);
 
+    const handleClose = () => {
+        onCloseRef.current();
+    };
+
     // Close on Escape key
     useEffect(() => {
-        const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+        const handleKey = (e) => { if (e.key === "Escape") handleClose(); };
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
-    }, [onClose]);
+    }, []);
 
     // Handle browser/mobile back button (popstate)
     useEffect(() => {
-        window.history.pushState({ artistModalOpen: true }, "");
+        window.history.pushState({ modal: "artist" }, "");
 
         const handlePopState = () => {
-            onClose();
+            handleClose();
         };
 
         window.addEventListener("popstate", handlePopState);
-
-        return () => {
-            window.removeEventListener("popstate", handlePopState);
-            if (window.history.state?.artistModalOpen) {
-                window.history.back();
-            }
-        };
-    }, [onClose]);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, []);
 
     const getSocialIcon = (url) => {
         if (!url) return <FaLink />;
@@ -70,11 +71,11 @@ const ArtistModal = ({ artist, onClose }) => {
     return (
         <div
             className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-            onClick={onClose}
+            onClick={handleClose}
         >
             {/* FLOATING CLOSE BUTTON — Always visible on screen */}
             <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="fixed top-4 right-4 z-[10000] w-10 h-10 rounded-full bg-black/80 border border-white/20 text-white hover:text-pink-400 hover:border-pink-500/50 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all active:scale-95 text-lg"
                 aria-label="Cerrar modal"
             >
@@ -87,7 +88,7 @@ const ArtistModal = ({ artist, onClose }) => {
             >
                 {/* CLOSE */}
                 <button
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="absolute top-4 right-4 text-white hover:text-pink-400 transition-colors bg-black/70 border border-white/20 p-2.5 rounded-full z-50 shadow-lg active:scale-95"
                     aria-label="Cerrar modal"
                 >
@@ -95,11 +96,13 @@ const ArtistModal = ({ artist, onClose }) => {
                 </button>
 
                 {/* IMAGE */}
-                <div className="relative  w-full mb-6 overflow-hidden rounded-xl border border-white/5">
+                <div className="relative w-full aspect-square mb-6 overflow-hidden rounded-xl border border-white/5 bg-zinc-800">
                     <img
-                        src={artist.image ? urlFor(artist.image).width(800).url() : ""}
+                        src={artist.image ? urlFor(artist.image).width(600).url() : ""}
                         alt={artist.name}
                         className="w-full h-full object-cover"
+                        loading="eager"
+                        fetchPriority="high"
                     />
                 </div>
 

@@ -21,6 +21,8 @@ const ReleaseModal = ({ release, onClose }) => {
     const canvasRef = useRef(null);
     const waveformDataRef = useRef([]);
     const modalRef = useRef(null);
+    const onCloseRef = useRef(onClose);
+    onCloseRef.current = onClose;
 
     // Animate in
     useEffect(() => {
@@ -31,30 +33,30 @@ const ReleaseModal = ({ release, onClose }) => {
         );
     }, []);
 
+    // Safe close helper
+    const handleClose = () => {
+        onCloseRef.current();
+    };
+
     // Close on Escape key
     useEffect(() => {
-        const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+        const handleKey = (e) => { if (e.key === "Escape") handleClose(); };
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
-    }, [onClose]);
+    }, []);
 
     // Handle browser/mobile back button (popstate)
     useEffect(() => {
-        window.history.pushState({ modalOpen: true }, "");
+        // Push state once on mount so pressing back closes the modal
+        window.history.pushState({ modal: "release" }, "");
 
         const handlePopState = () => {
-            onClose();
+            handleClose();
         };
 
         window.addEventListener("popstate", handlePopState);
-
-        return () => {
-            window.removeEventListener("popstate", handlePopState);
-            if (window.history.state?.modalOpen) {
-                window.history.back();
-            }
-        };
-    }, [onClose]);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, []);
 
     // Determine if this release is currently active in the player
     const isThisRelease = currentTrack && (
@@ -189,11 +191,11 @@ const ReleaseModal = ({ release, onClose }) => {
     return (
         <div
             className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
-            onClick={onClose}
+            onClick={handleClose}
         >
             {/* FLOATING CLOSE BUTTON — Always visible on screen, especially when scrolling on mobile */}
             <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="fixed top-4 right-4 z-[10000] w-10 h-10 rounded-full bg-black/80 border border-white/20 text-white hover:text-pink-400 hover:border-pink-500/50 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all active:scale-95"
                 aria-label="Cerrar modal"
             >
@@ -207,7 +209,7 @@ const ReleaseModal = ({ release, onClose }) => {
             >
                 {/* CLOSE BUTTON INSIDE CARD */}
                 <button
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="absolute top-4 right-4 text-white hover:text-pink-400 transition-colors bg-black/70 border border-white/20 p-2.5 rounded-full z-50 shadow-lg active:scale-95"
                     aria-label="Cerrar modal"
                 >
@@ -215,15 +217,17 @@ const ReleaseModal = ({ release, onClose }) => {
                 </button>
 
                 {/* COVER */}
-                <div className="relative w-full overflow-hidden rounded-t-2xl">
+                <div className="relative w-full aspect-square overflow-hidden rounded-t-2xl bg-zinc-800">
                     {release.cover ? (
                         <img
-                            src={urlFor(release.cover).width(800).url()}
+                            src={urlFor(release.cover).width(600).url()}
                             alt={release.title}
-                            className="w-full object-cover"
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                            fetchPriority="high"
                         />
                     ) : (
-                        <div className="w-full aspect-square bg-zinc-800 flex items-center justify-center">
+                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
                             <span className="text-zinc-600 text-xs uppercase tracking-widest">No cover</span>
                         </div>
                     )}
